@@ -4,11 +4,14 @@ import { User } from "../entity/User";
 import { getRole } from "../services/role";
 import { IError } from "../types";
 
-@Route("users")
+@Route("auth")
 @Tags("User")
 export default class UserController {
-	@Post("/")
-	public async createUser(@Body() body: IUserPayload): Promise<User | IError> {
+	@Post("/login")
+	public async login(@Body() body: {
+    username:string,
+    password:string
+  }): Promise<User | IError> {
 		const role = await getRole(body.roleId);
 		role && role != null ? (body.role = role) : null;
 		const user = await createUser(body);

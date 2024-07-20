@@ -30,7 +30,7 @@ export class User extends BaseEntity {
 	@Column()
 	lastName!: string;
 
-	@ManyToOne((_type) => Role, (role: Role) => role.users)
+	@ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
 	@JoinColumn()
 	role!: Role;
 
