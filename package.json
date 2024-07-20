@@ -1,0 +1,57 @@
+{
+	"name": "server",
+	"version": "0.0.1",
+	"description": "server",
+	"main": "build/index.js",
+	"type": "commonjs",
+	"license": "MIT",
+	"scripts": {
+		"build": "yarn clean && tsc",
+		"clean": "rimraf build",
+		"start": "env-cmd -f .env.local node build/index.js",
+		"server:start": "env-cmd -f .env.production node build/index.js",
+		"watch": "npx tsc --watch",
+		"swagger": "tsoa spec",
+		"nodemon": "env-cmd -f .env.local nodemon -q build/index.js",
+		"dev": "concurrently \"npx tsc --watch\" \"yarn nodemon\" \"nodemon -x tsoa spec\"",
+		"server:dev": "concurrently \"npx tsc --watch\" \"env-cmd -f .env.production yarn nodemon\" \"nodemon -x tsoa spec\"",
+		"entity": "typeorm entity:create src/entity/ex"
+	},
+	"devDependencies": {
+		"@types/compression": "^1.7.5",
+		"@types/cookie-parser": "^1.4.7",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/express-serve-static-core": "^4.19.5",
+		"@types/joi": "^17.2.3",
+		"@types/morgan": "^1.9.9",
+		"@types/node": "^20.14.11",
+		"@types/swagger-ui-express": "^4.1.6",
+		"concurrently": "^8.2.2",
+		"nodemon": "^3.1.4",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.3"
+	},
+	"dependencies": {
+		"argon2": "^0.40.3",
+		"compression": "^1.7.4",
+		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.5",
+		"env-cmd": "^10.1.0",
+		"eventemitter3": "^5.0.1",
+		"express": "^4.19.2",
+		"helmet": "^7.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"morgan": "^1.10.0",
+		"mysql2": "^3.10.3",
+		"rimraf": "5",
+		"socket.io": "^4.7.5",
+		"swagger-ui-express": "^5.0.1",
+		"tsoa": "^6.4.0",
+		"typeorm": "^0.3.20"
+	},
+	"resolutions": {
+		"string-width": "^4.2.0",
+		"wrap-ansi": "^7.0.0"
+	}
+}
