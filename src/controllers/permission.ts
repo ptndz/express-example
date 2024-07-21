@@ -36,7 +36,7 @@ export default class PermissionController {
 	@Get("/list")
 	public async getList(): Promise<IResponse<Array<string>>> {
 		const permissions = await getEntityTableNames();
-		const actions: string[] = ["list", "create", "detail"];
+		const actions: string[] = ["list", "create", "detail", "update", "delete"];
 
 		const result: string[] = [];
 
