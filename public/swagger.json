@@ -1030,7 +1030,7 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "https://https://server1.test/"
 		}
 	]
 }
