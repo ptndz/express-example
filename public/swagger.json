@@ -139,17 +139,31 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IError": {
+			"IResponse_User_": {
 				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
 					"errors": {
 						"items": {
 							"type": "string"
 						},
 						"type": "array"
+					},
+					"data": {
+						"$ref": "#/components/schemas/User"
 					}
 				},
 				"required": [
-					"errors"
+					"code",
+					"success"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -208,6 +222,67 @@
 					}
 				]
 			},
+			"IResponse_Array_User__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Role_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"$ref": "#/components/schemas/Role"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users-or-permissions__": {
 				"properties": {
 					"name": {
@@ -234,6 +309,67 @@
 			},
 			"IRolePayload": {
 				"$ref": "#/components/schemas/Omit_Role.id-or-createAt-or-updateAt-or-users-or-permissions_"
+			},
+			"IResponse_Array_Role__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Role"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Permissions_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"$ref": "#/components/schemas/Permissions"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"Pick_Permissions.Exclude_keyofPermissions.id-or-createAt-or-updateAt__": {
 				"properties": {
@@ -265,6 +401,114 @@
 			},
 			"IPermissionPayload": {
 				"$ref": "#/components/schemas/Omit_Permissions.id-or-createAt-or-updateAt_"
+			},
+			"IResponse_Array_Permissions__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Permissions"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Token": {
+				"properties": {
+					"refreshToken": {
+						"type": "string",
+						"nullable": true
+					},
+					"accessToken": {
+						"type": "string",
+						"nullable": true
+					}
+				},
+				"required": [
+					"refreshToken",
+					"accessToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Token_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"$ref": "#/components/schemas/Token"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_boolean_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -288,14 +532,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/User"
-										},
-										{
-											"$ref": "#/components/schemas/IError"
-										}
-									]
+									"$ref": "#/components/schemas/IResponse_User_"
 								}
 							}
 						}
@@ -325,10 +562,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/User"
-									},
-									"type": "array"
+									"$ref": "#/components/schemas/IResponse_Array_User__"
 								}
 							}
 						}
@@ -350,12 +584,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/User"
-										}
-									],
-									"nullable": true
+									"$ref": "#/components/schemas/IResponse_User_"
 								}
 							}
 						}
@@ -386,7 +615,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Role"
+									"$ref": "#/components/schemas/IResponse_Role_"
 								}
 							}
 						}
@@ -416,10 +645,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Role"
-									},
-									"type": "array"
+									"$ref": "#/components/schemas/IResponse_Array_Role__"
 								}
 							}
 						}
@@ -441,12 +667,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/Role"
-										}
-									],
-									"nullable": true
+									"$ref": "#/components/schemas/IResponse_Role_"
 								}
 							}
 						}
@@ -477,7 +698,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Permissions"
+									"$ref": "#/components/schemas/IResponse_Permissions_"
 								}
 							}
 						}
@@ -507,10 +728,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Permissions"
-									},
-									"type": "array"
+									"$ref": "#/components/schemas/IResponse_Array_Permissions__"
 								}
 							}
 						}
@@ -532,12 +750,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/Permissions"
-										}
-									],
-									"nullable": true
+									"$ref": "#/components/schemas/IResponse_Permissions_"
 								}
 							}
 						}
@@ -568,21 +781,14 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"anyOf": [
-										{
-											"$ref": "#/components/schemas/User"
-										},
-										{
-											"$ref": "#/components/schemas/IError"
-										}
-									]
+									"$ref": "#/components/schemas/IResponse_Token_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"User"
+					"Auth"
 				],
 				"security": [],
 				"parameters": [],
@@ -610,65 +816,36 @@
 				}
 			}
 		},
-		"/auth": {
-			"get": {
-				"operationId": "GetUsers",
+		"/auth/register": {
+			"post": {
+				"operationId": "Register",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/User"
-									},
-									"type": "array"
+									"$ref": "#/components/schemas/IResponse_boolean_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"User"
+					"Auth"
 				],
 				"security": [],
-				"parameters": []
-			}
-		},
-		"/auth/{id}": {
-			"get": {
-				"operationId": "GetUser",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"allOf": [
-										{
-											"$ref": "#/components/schemas/User"
-										}
-									],
-									"nullable": true
-								}
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUserPayload"
 							}
 						}
 					}
-				},
-				"tags": [
-					"User"
-				],
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
+				}
 			}
 		}
 	},

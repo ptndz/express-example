@@ -5,18 +5,21 @@ import { getPermissionByRoleIdByResource } from "../services/permission";
 export const hasPermission = (resource: string, action: string) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		try {
-			if (!req.user) {
+			if (!req.userId) {
 				return res.status(401).json({
 					errors: [`AuthorizeUser is not logged in yet`],
 				});
 			}
-			const userId = req.user.id;
-			const user = await getUserOrRole(userId);
 
+			const user = await getUserOrRole(req.userId);
+			console.log(user);
 			if (!user || !user.role) {
 				return res.status(401).json({
 					errors: [`User does not have permission to ${action}.`],
 				});
+			}
+			if (user.role.root) {
+				return next();
 			}
 			// Tạo chuỗi tài nguyên đầy đủ, ví dụ: 'user.update'
 			const permissionResource = `${resource}.${action}`;

@@ -1,18 +1,16 @@
+import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
-import { IError } from "../types";
 
 export type IUserPayload = Omit<User, "id" | "createAt" | "updateAt"> & {
 	roleId: string;
 };
 
-export const createUser = async (user: IUserPayload): Promise<User | IError> => {
+export const createUser = async (user: IUserPayload): Promise<User | null> => {
 	try {
 		const data = await User.create(user);
 		return await data.save();
 	} catch (error: any) {
-		return {
-			errors: error.code,
-		};
+		return null;
 	}
 };
 
@@ -26,7 +24,11 @@ export const getUserByUserName = async (username: string): Promise<User | null> 
 	return user;
 };
 export const getUsers = async (): Promise<User[]> => {
-	return await User.find();
+	const data = await AppDataSource.getRepository(User)
+		.createQueryBuilder("user")
+		.select(["user.id", "user.username", "user.firstName", "user.lastName", "user.email"]) // Liệt kê các trường bạn muốn lấy
+		.getMany();
+	return data;
 };
 
 export const getUser = async (id: string): Promise<User | null> => {

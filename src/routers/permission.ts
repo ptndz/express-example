@@ -16,20 +16,20 @@ router.post(
 		const controller = new PermissionController();
 
 		const response = await controller.createPermission(req.body);
-		return res.send(response);
+		return res.status(response.code).send(response);
 	}
 );
 
 router.get("/", async (_req, res) => {
 	const controller = new PermissionController();
 	const response = await controller.getPermissions();
-	return res.send(response);
+	return res.status(response.code).send(response);
 });
 
 router.get("/:id", validate([param("id").notEmpty().trim()]), async (req, res) => {
 	const controller = new PermissionController();
 	const id = req.params.id;
 	const response = await controller.getPermissionByRoleId(id);
-	return res.send(response);
+	return res.status(response.code).send(response);
 });
 export default router;
