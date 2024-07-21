@@ -1,9 +1,11 @@
 import { Route, Tags, Post, Body } from "tsoa";
-import { createUser, getUserByUserName, IUserPayload } from "../services/user";
+import { createUser, getUser, getUserByUserName, IUserPayload } from "../services/user";
 
 import argon2 from "argon2";
 import { IResponse, Token } from "../types";
-import { JwtGenerateTokens } from "../utils/jwt";
+import { JwtGenerateTokens, JwtSignAccessToken, JwtVerifyRefreshToken } from "../utils/jwt";
+
+import { DAY_TIME } from "../constants";
 
 @Route("auth")
 @Tags("Auth")
@@ -74,5 +76,67 @@ export default class AuthController {
 			success: false,
 			data: false,
 		};
+	}
+
+	@Post("/refresh-token")
+	public async refreshToken(
+		@Body() body: { refreshToken: string }
+	): Promise<IResponse<{ accessToken: string | null }>> {
+		const refreshToken = body.refreshToken;
+
+		if (!refreshToken)
+			return {
+				code: 403,
+				success: false,
+				message: "Refresh Token is required!",
+			};
+
+		try {
+			const decodeUser = await JwtVerifyRefreshToken(refreshToken);
+
+			if (decodeUser.error) {
+				return {
+					code: 500,
+					success: false,
+					message: decodeUser.error.message,
+				};
+			}
+			if (!decodeUser.data) {
+				return {
+					code: 500,
+					success: false,
+					message: "Error",
+				};
+			}
+			const existingUser = await getUser(decodeUser.data?.userId);
+			if (!existingUser) {
+				return {
+					code: 404,
+					success: false,
+					message: "User Not found.",
+				};
+			}
+
+			const token = await JwtSignAccessToken({ userId: existingUser.id }, DAY_TIME);
+			if (token.error) {
+				return {
+					code: 500,
+					success: false,
+					message: "Error",
+				};
+			}
+
+			return {
+				success: true,
+				code: 200,
+				data: { accessToken: token.data },
+			};
+		} catch (error) {
+			return {
+				success: true,
+				code: 500,
+				message: "Error",
+			};
+		}
 	}
 }

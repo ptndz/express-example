@@ -7,14 +7,17 @@ export const hasPermission = (resource: string, action: string) => {
 		try {
 			if (!req.userId) {
 				return res.status(401).json({
+					code: 401,
+					success: false,
 					errors: [`AuthorizeUser is not logged in yet`],
 				});
 			}
 
 			const user = await getUserOrRole(req.userId);
-			console.log(user);
 			if (!user || !user.role) {
 				return res.status(401).json({
+					code: 401,
+					success: false,
 					errors: [`User does not have permission to ${action}.`],
 				});
 			}
@@ -29,12 +32,16 @@ export const hasPermission = (resource: string, action: string) => {
 
 			if (!permission) {
 				return res.status(401).json({
+					code: 401,
+					success: false,
 					errors: [`User does not have permission to ${action}.`],
 				});
 			}
 			return next();
 		} catch (error) {
 			return res.status(500).json({
+				code: 500,
+				success: false,
 				errors: [`Error checking permissions`],
 			});
 		}

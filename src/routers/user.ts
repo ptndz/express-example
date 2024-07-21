@@ -8,7 +8,7 @@ const router = Router();
 router.post(
 	"/",
 	authAccessToken,
-	hasPermission("admin", "create"),
+	hasPermission("user", "create"),
 	validate([
 		body("username").isLength({ min: 5 }),
 		body("email").isEmail(),
@@ -25,7 +25,7 @@ router.post(
 	}
 );
 
-router.get("/", authAccessToken, hasPermission("admin", "list"), async (_req, res) => {
+router.get("/", authAccessToken, hasPermission("user", "list"), async (_req, res) => {
 	const controller = new UserController();
 	const response = await controller.getUsers();
 	return res.status(response.code).send(response);
@@ -34,7 +34,7 @@ router.get("/", authAccessToken, hasPermission("admin", "list"), async (_req, re
 router.get(
 	"/:id",
 	authAccessToken,
-	hasPermission("admin", "detail"),
+	hasPermission("user", "detail"),
 	validate([param("id").notEmpty().trim()]),
 	async (req, res) => {
 		const controller = new UserController();

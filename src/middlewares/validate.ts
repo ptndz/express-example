@@ -6,7 +6,7 @@ export const validate = (validations: ContextRunner[]) => {
 		for (const validation of validations) {
 			const result = await validation.run(req);
 			if (!result.isEmpty()) {
-				return res.status(400).json({ errors: result.array() });
+				return res.status(400).json({ code: 401, success: false, errors: result.array() });
 			}
 		}
 		next();

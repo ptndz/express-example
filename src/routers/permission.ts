@@ -1,12 +1,14 @@
 import { Router } from "express";
 import PermissionController from "../controllers/permission";
 import { body, param } from "express-validator";
-import { validate } from "../middlewares";
+import { authAccessToken, hasPermission, validate } from "../middlewares";
 
 const router = Router();
 
 router.post(
 	"/",
+	authAccessToken,
+	hasPermission("permissions", "create"),
 	validate([
 		body("role_id").optional().isNumeric().withMessage("roleId should be a numeric value"),
 		body("resource").trim(),
@@ -20,16 +22,26 @@ router.post(
 	}
 );
 
-router.get("/", async (_req, res) => {
+router.get("/", authAccessToken, hasPermission("permissions", "list"), async (_req, res) => {
 	const controller = new PermissionController();
 	const response = await controller.getPermissions();
 	return res.status(response.code).send(response);
 });
-
-router.get("/:id", validate([param("id").notEmpty().trim()]), async (req, res) => {
+router.get("/list", authAccessToken, async (_req, res) => {
 	const controller = new PermissionController();
-	const id = req.params.id;
-	const response = await controller.getPermissionByRoleId(id);
+	const response = await controller.getList();
 	return res.status(response.code).send(response);
 });
+router.get(
+	"/:id",
+	authAccessToken,
+	hasPermission("permissions", "detail"),
+	validate([param("id").notEmpty().trim()]),
+	async (req, res) => {
+		const controller = new PermissionController();
+		const id = req.params.id;
+		const response = await controller.getPermissionByRoleId(id);
+		return res.status(response.code).send(response);
+	}
+);
 export default router;

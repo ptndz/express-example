@@ -434,6 +434,38 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IResponse_Array_string__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Token": {
 				"properties": {
 					"refreshToken": {
@@ -509,9 +541,54 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IResponse__accessToken-string-or-null__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"properties": {
+							"accessToken": {
+								"type": "string",
+								"nullable": true
+							}
+						},
+						"required": [
+							"accessToken"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
-		"securitySchemes": {}
+		"securitySchemes": {
+			"Bearer": {
+				"type": "apiKey",
+				"name": "Authorization",
+				"in": "header",
+				"description": "Enter the token with the `Bearer: ` prefix, e.g. Bearer abcde12345"
+			}
+		}
 	},
 	"info": {
 		"title": "server",
@@ -541,7 +618,11 @@
 				"tags": [
 					"User"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -571,7 +652,11 @@
 				"tags": [
 					"User"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": []
 			}
 		},
@@ -593,7 +678,11 @@
 				"tags": [
 					"User"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -624,7 +713,11 @@
 				"tags": [
 					"Role"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -654,7 +747,11 @@
 				"tags": [
 					"Role"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": []
 			}
 		},
@@ -676,7 +773,11 @@
 				"tags": [
 					"Role"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -707,7 +808,11 @@
 				"tags": [
 					"Permissions"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [],
 				"requestBody": {
 					"required": true,
@@ -737,7 +842,37 @@
 				"tags": [
 					"Permissions"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/permissions/list": {
+			"get": {
+				"operationId": "GetList",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Array_string__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Permissions"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": []
 			}
 		},
@@ -759,7 +894,11 @@
 				"tags": [
 					"Permissions"
 				],
-				"security": [],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -842,6 +981,46 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/IUserPayload"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/auth/refresh-token": {
+			"post": {
+				"operationId": "RefreshToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse__accessToken-string-or-null__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"refreshToken": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"refreshToken"
+								],
+								"type": "object"
 							}
 						}
 					}

@@ -1,4 +1,4 @@
-import { Route, Tags, Post, Body, Get, Path } from "tsoa";
+import { Route, Tags, Post, Body, Get, Path, Security } from "tsoa";
 import { createUser, getUsers, getUser, IUserPayload } from "../services/user";
 import { User } from "../entity/User";
 import { getRole } from "../services/role";
@@ -7,6 +7,7 @@ import { IResponse } from "../types";
 @Route("users")
 @Tags("User")
 export default class UserController {
+	@Security("Bearer")
 	@Post("/")
 	public async createUser(@Body() body: IUserPayload): Promise<IResponse<User>> {
 		const role = await getRole(body.roleId);
@@ -25,6 +26,7 @@ export default class UserController {
 			message: "Tao bi loi",
 		};
 	}
+	@Security("Bearer")
 	@Get("/")
 	public async getUsers(): Promise<IResponse<Array<User>>> {
 		const users = await getUsers();
@@ -34,6 +36,7 @@ export default class UserController {
 			data: users,
 		};
 	}
+	@Security("Bearer")
 	@Get("/:id")
 	public async getUser(@Path() id: string): Promise<IResponse<User>> {
 		const user = await getUser(id);

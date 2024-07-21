@@ -25,13 +25,19 @@ export const authAccessToken = async (req: Request, res: Response, next: NextFun
 		}
 		const decodedUser = await JwtVerifyAccessToken(accessToken as string);
 		if (decodedUser.error) {
-			return res.status(401).send({ message: decodedUser.error.message });
+			return res.status(401).send({
+				code: 403,
+				success: false,
+				message: decodedUser.error.message,
+			});
 		}
 
 		req.userId = decodedUser.data?.userId;
 		return next();
 	} catch (error) {
 		return res.status(500).json({
+			code: 500,
+			success: false,
 			message: "Server",
 		});
 	}
@@ -45,7 +51,6 @@ export const socketMiddleware = async (
 	}
 ) => {
 	let req = socket.request as Request;
-	console.log(req);
 
 	const accessToken = socket.handshake.auth.token;
 	if (!accessToken) {

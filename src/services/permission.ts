@@ -1,3 +1,4 @@
+import { AppDataSource } from "../data-source";
 import { Permissions } from "../entity/Permissions";
 
 export type IPermissionPayload = Omit<Permissions, "id" | "createAt" | "updateAt">;
@@ -32,4 +33,9 @@ export const getPermissionByRoleIdByResource = async (
 	});
 	if (!permission) return null;
 	return permission;
+};
+export const getEntityTableNames = async () => {
+	const entityMetadatas = await AppDataSource.entityMetadatas;
+	const tableNames = entityMetadatas.map((metadata) => metadata.tableName);
+	return tableNames;
 };

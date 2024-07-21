@@ -31,5 +31,15 @@ router.post(
 		return res.status(response.code).send(response);
 	}
 );
+router.post(
+	"/refresh-token",
+
+	validate([body("refreshToken").isLength({ min: 5 })]),
+	async (req, res) => {
+		const controller = new AuthController();
+		const response = await controller.refreshToken(req.body);
+		return res.status(response.code).send(response);
+	}
+);
 
 export default router;
