@@ -85,6 +85,9 @@ AppDataSource.initialize()
 		socket(io);
 
 		server.listen(port, () => {
+			process.on("exit", function () {
+				server.close();
+			});
 			console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 		});
 	})
