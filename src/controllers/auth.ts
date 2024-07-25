@@ -1,4 +1,4 @@
-import { Route, Tags, Post, Body } from "tsoa";
+import { Route, Tags, Post, Body, Get, Security, Request } from "tsoa";
 import { createUser, getUser, getUserByUserName, IUserPayload } from "../services/user";
 
 import argon2 from "argon2";
@@ -6,6 +6,9 @@ import { IResponse, Token } from "../types";
 import { JwtGenerateTokens, JwtSignAccessToken, JwtVerifyRefreshToken } from "../utils/jwt";
 
 import { DAY_TIME } from "../constants";
+import { User } from "../entity/User";
+import { removeKeyObject } from "../utils";
+import * as express from "express";
 
 @Route("auth")
 @Tags("Auth")
@@ -138,5 +141,26 @@ export default class AuthController {
 				message: "Error",
 			};
 		}
+	}
+	@Get("/me")
+	@Security("Bearer")
+	@Security("Cookie")
+	public async getMe(@Request() req: express.Request): Promise<IResponse<Partial<User>>> {
+		if (req.userId) {
+			const user = await getUser(req.userId);
+			if (user) {
+				const data = removeKeyObject(user, ["password"]);
+				return {
+					code: 200,
+					success: true,
+					data: data,
+				};
+			}
+		}
+
+		return {
+			code: 404,
+			success: false,
+		};
 	}
 }

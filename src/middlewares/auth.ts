@@ -6,15 +6,9 @@ import { JwtVerifyAccessToken } from "../utils";
 
 export const authAccessToken = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const authHeader = req.header("Authorization");
-		if (!authHeader) {
-			return res.status(403).json({
-				code: 403,
-				success: false,
-				message: "Access token provided!",
-			});
-		}
-		const accessToken = authHeader.split(" ")[1];
+		const accessToken = req.header("Authorization")
+			? req.header("Authorization")?.split(" ")[1]
+			: req.cookies["token"];
 
 		if (!accessToken) {
 			return res.status(403).json({

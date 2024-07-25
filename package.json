@@ -16,7 +16,7 @@
 		"dev": "concurrently \"npx tsc --watch\" \"yarn nodemon\" \"nodemon -x tsoa spec\"",
 		"server:dev": "concurrently \"npx tsc --watch\" \"env-cmd -f .env.production yarn nodemon\" \"nodemon -x tsoa spec\"",
 		"entity": "typeorm entity:create src/entity/ex",
-		"start:debug": "env-cmd -f .env.local node --inspect build/index.js"
+		"start:debug": "concurrently \"npx tsc --watch\" \"env-cmd -f .env.production nodemon --inspect build/index.js\""
 	},
 	"devDependencies": {
 		"@types/compression": "^1.7.5",

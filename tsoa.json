@@ -3,7 +3,7 @@
 	"noImplicitAdditionalProperties": "throw-on-extras",
 	"controllerPathGlobs": ["src/controllers/*.ts"],
 	"spec": {
-		"host": "https://server1.test",
+		"host": "server1.test",
 		"outputDirectory": "public",
 		"specVersion": 3,
 		"securityDefinitions": {
@@ -12,7 +12,8 @@
 				"name": "Authorization",
 				"in": "header",
 				"description": "Enter the token with the `Bearer: ` prefix, e.g. Bearer abcde12345"
-			}
+			},
+			"Cookie": { "type": "apiKey", "name": "token", "in": "cookie" }
 		}
 	},
 	"routes": {

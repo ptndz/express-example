@@ -5,8 +5,8 @@ import {
 	BaseEntity,
 	CreateDateColumn,
 	UpdateDateColumn,
-	ManyToOne,
 	JoinColumn,
+	ManyToMany,
 } from "typeorm";
 import { Role } from "./Role";
 
@@ -15,18 +15,18 @@ export class Permissions extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id!: string;
 
-	@Column({ unique: true })
+	@Column()
 	role_id!: string;
 
-	@Column({ unique: true })
+	@Column()
 	resource!: string;
 
-	@Column({ unique: true })
+	@Column({ default: null })
 	value!: string;
 
-	@ManyToOne((_type) => Role, (role: Role) => role.permissions)
+	@ManyToMany((_type) => Role, (role: Role) => role.permissions)
 	@JoinColumn()
-	role!: Role;
+	roles!: Role;
 
 	@CreateDateColumn({
 		type: "timestamp",

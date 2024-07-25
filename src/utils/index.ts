@@ -41,6 +41,15 @@ function removeKeyObject(obj: { [key: string]: any }, exclude: string[]) {
 	}
 	return obj;
 }
+
+function removeKeyObjectArray(arr: { [key: string]: any }[], exclude: string[]) {
+	return arr.map((obj) => {
+		for (const key of exclude) {
+			delete obj[key];
+		}
+		return obj;
+	});
+}
 export {
 	removeKeyObject,
 	isNullOrUndefined,
@@ -48,4 +57,5 @@ export {
 	checkObjectMissingAnyKey,
 	removeOptionalKeys,
 	isEmptyObject,
+	removeKeyObjectArray,
 };

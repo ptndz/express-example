@@ -1,10 +1,12 @@
-import { Route, Tags, Post, Body, Get, Path, Security } from "tsoa";
+import { Route, Tags, Post, Body, Get, Path, Security, Put, Delete } from "tsoa";
 import {
 	IPermissionPayload,
 	createPermission,
-	getEntityTableNames,
+	deletePermission,
 	getPermissionByRoleId,
+	getPermissionResourceActions,
 	getPermissions,
+	updatePermission,
 } from "../services/permission";
 import { Permissions } from "../entity/Permissions";
 import { IResponse } from "../types";
@@ -15,14 +17,25 @@ export default class PermissionController {
 	@Security("Bearer")
 	@Post("/")
 	public async createPermission(@Body() body: IPermissionPayload): Promise<IResponse<Permissions>> {
-		const permission = await createPermission(body);
+		const resource = body.resource;
+		const permissionsActions = await getPermissionResourceActions();
+
+		if (permissionsActions.includes(resource)) {
+			const permission = await createPermission(body);
+			return {
+				code: 200,
+				success: true,
+				data: permission,
+			};
+		}
 		return {
-			code: 200,
-			success: true,
-			data: permission,
+			code: 404,
+			success: false,
+			message: "Khong thanh cong",
 		};
 	}
 	@Security("Bearer")
+	@Security("Cookie")
 	@Get("/")
 	public async getPermissions(): Promise<IResponse<Array<Permissions>>> {
 		const permissions = await getPermissions();
@@ -33,26 +46,18 @@ export default class PermissionController {
 		};
 	}
 	@Security("Bearer")
+	@Security("Cookie")
 	@Get("/list")
 	public async getList(): Promise<IResponse<Array<string>>> {
-		const permissions = await getEntityTableNames();
-		const actions: string[] = ["list", "create", "detail", "update", "delete"];
-
-		const result: string[] = [];
-
-		permissions.forEach((permission) => {
-			actions.forEach((action) => {
-				result.push(`${permission}.${action}`);
-			});
-		});
-
+		const permissionsActions = await getPermissionResourceActions();
 		return {
 			code: 200,
 			success: true,
-			data: result,
+			data: permissionsActions,
 		};
 	}
 	@Security("Bearer")
+	@Security("Cookie")
 	@Get("/:id")
 	public async getPermissionByRoleId(@Path() id: string): Promise<IResponse<Permissions>> {
 		const permission = await getPermissionByRoleId(id);
@@ -61,6 +66,64 @@ export default class PermissionController {
 				code: 200,
 				success: true,
 				data: permission,
+			};
+		}
+		return {
+			code: 404,
+			success: false,
+			message: "Khong ton tai",
+		};
+	}
+	@Security("Bearer")
+	@Security("Cookie")
+	@Put("/:id")
+	public async updatePermission(
+		@Path() id: string,
+		@Body() body: Partial<IPermissionPayload>
+	): Promise<IResponse<Permissions>> {
+		if (body.resource) {
+			const resource = body.resource;
+			const permissionsActions = await getPermissionResourceActions();
+			if (permissionsActions.includes(resource)) {
+				const permission = await updatePermission(id, body);
+				if (permission) {
+					return {
+						code: 200,
+						success: true,
+						data: permission,
+					};
+				}
+			}
+			return {
+				code: 404,
+				success: false,
+				message: "Khong ton tai",
+			};
+		}
+		const permission = await updatePermission(id, body);
+		if (permission) {
+			return {
+				code: 200,
+				success: true,
+				data: permission,
+			};
+		}
+		return {
+			code: 404,
+			success: false,
+			message: "Khong ton tai",
+		};
+	}
+	@Security("Bearer")
+	@Security("Cookie")
+	@Delete("/:id")
+	public async deletePermission(@Path() id: string): Promise<IResponse<Permissions>> {
+		const permission = await deletePermission(id);
+		if (permission) {
+			return {
+				code: 200,
+				success: true,
+				message: "thanh cong",
 			};
 		}
 		return {

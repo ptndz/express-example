@@ -35,4 +35,18 @@ router.get(
 		return res.status(response.code).send(response);
 	}
 );
+router.put(
+	"/:id",
+	authAccessToken,
+	hasPermission("role", "update"),
+	validate([param("id").isNumeric()]),
+	async (req, res) => {
+		const controller = new RoleController();
+		const id = req.params.id;
+		const data = req.body;
+
+		const response = await controller.updateRole(id, data);
+		return res.status(response.code).send(response);
+	}
+);
 export default router;

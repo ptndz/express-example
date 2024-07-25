@@ -27,11 +27,11 @@ AppDataSource.initialize()
 
 		app.use(express.json({ limit: "64mb" }));
 		app.use(express.urlencoded({ limit: "64mb", extended: true }));
-
+		app.use(cookieParser());
 		app.use(
 			cors({
 				origin: ORIGIN,
-				methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+				methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH", "OPTIONS"],
 				credentials: true,
 				optionsSuccessStatus: 200,
 			})
@@ -39,7 +39,7 @@ AppDataSource.initialize()
 
 		app.use(morgan("dev"));
 		app.set("trust proxy", 1);
-		app.use(cookieParser());
+
 		app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 		app.use(
 			compression({

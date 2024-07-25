@@ -1,3 +1,4 @@
+import { PERMISSIONS_ACTIONS } from "../constants";
 import { AppDataSource } from "../data-source";
 import { Permissions } from "../entity/Permissions";
 
@@ -7,7 +8,42 @@ export const createPermission = async (permission: IPermissionPayload): Promise<
 	const data = await Permissions.create(permission);
 	return await data.save();
 };
+export const createListPermissions = async (
+	roleId: string,
+	permissions: string[]
+): Promise<Permissions[]> => {
+	const listPermissions: any = [];
+	permissions.map((item) => {
+		listPermissions.push({
+			role_id: roleId,
+			resource: item,
+		});
+	});
+	const permissionRepository = AppDataSource.getRepository(Permissions);
 
+	const existingPermissions = await permissionRepository.find({
+		where: [...listPermissions],
+	});
+
+	// Filter out resources that already have a permission
+	const existingResources = new Set(existingPermissions.map((p) => p.resource));
+
+	const newPermissions = permissions.filter((resource) => !existingResources.has(resource));
+	// Map new permissions to Permissions entities
+	const data = newPermissions.map((item) => {
+		const permission = new Permissions();
+		permission.role_id = roleId;
+		permission.resource = item;
+		return permission;
+	});
+
+	// Save new permissions to the database
+	if (data.length > 0) {
+		return await permissionRepository.save(data);
+	}
+
+	return []; // Return an empty array if no new permissions were created
+};
 export const getPermissions = async (): Promise<Permissions[]> => {
 	return await Permissions.find();
 };
@@ -20,7 +56,16 @@ export const getPermissionByRoleId = async (roleId: string): Promise<Permissions
 	if (!role) return null;
 	return role;
 };
+export const updatePermission = async (id: string, updateData: Partial<Permissions>) => {
+	await Permissions.update(id, updateData);
+	const permission = await Permissions.findOne({ where: { id } });
+	return permission;
+};
+export const deletePermission = async (id: string) => {
+	await Permissions.delete(id);
 
+	return true;
+};
 export const getPermissionByRoleIdByResource = async (
 	roleId: string,
 	resource: string
@@ -38,4 +83,15 @@ export const getEntityTableNames = async () => {
 	const entityMetadatas = await AppDataSource.entityMetadatas;
 	const tableNames = entityMetadatas.map((metadata) => metadata.tableName);
 	return tableNames;
+};
+export const getPermissionResourceActions = async () => {
+	const permissions = await getEntityTableNames();
+	const result: string[] = [];
+
+	permissions.forEach((permission) => {
+		PERMISSIONS_ACTIONS.forEach((action) => {
+			result.push(`${permission}.${action}`);
+		});
+	});
+	return result;
 };

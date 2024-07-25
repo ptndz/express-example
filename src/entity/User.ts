@@ -32,7 +32,7 @@ export class User extends BaseEntity {
 
 	@ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
 	@JoinColumn()
-	role!: Role;
+	role!: Role | null;
 
 	@CreateDateColumn({
 		type: "timestamp",

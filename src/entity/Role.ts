@@ -6,6 +6,7 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	OneToMany,
+	ManyToMany,
 } from "typeorm";
 import { User } from "./User";
 import { Permissions } from "./Permissions";
@@ -17,7 +18,7 @@ export class Role extends BaseEntity {
 	@Column({ unique: true })
 	name!: string;
 
-	@Column({ unique: true })
+	@Column()
 	description!: string;
 
 	@Column()
@@ -26,7 +27,7 @@ export class Role extends BaseEntity {
 	@OneToMany((_type) => User, (user: User) => user.role)
 	users!: Array<User>;
 
-	@OneToMany((_type) => Permissions, (permissions: Permissions) => permissions.role)
+	@ManyToMany((_type) => Permissions, (permissions: Permissions) => permissions.roles)
 	permissions!: Array<Permissions>;
 
 	@CreateDateColumn({

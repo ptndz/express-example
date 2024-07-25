@@ -28,7 +28,12 @@
 						"type": "string"
 					},
 					"role": {
-						"$ref": "#/components/schemas/Role"
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Role"
+							}
+						],
+						"nullable": true
 					},
 					"createAt": {
 						"type": "string",
@@ -115,7 +120,7 @@
 					"value": {
 						"type": "string"
 					},
-					"role": {
+					"roles": {
 						"$ref": "#/components/schemas/Role"
 					},
 					"createAt": {
@@ -132,7 +137,7 @@
 					"role_id",
 					"resource",
 					"value",
-					"role",
+					"roles",
 					"createAt",
 					"updateAt"
 				],
@@ -222,7 +227,42 @@
 					}
 				]
 			},
-			"IResponse_Array_User__": {
+			"IData_User_": {
+				"properties": {
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"per_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"current_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"last_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"total",
+					"per_page",
+					"current_page",
+					"last_page",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_IData_User__": {
 				"properties": {
 					"code": {
 						"type": "number",
@@ -241,10 +281,7 @@
 						"type": "array"
 					},
 					"data": {
-						"items": {
-							"$ref": "#/components/schemas/User"
-						},
-						"type": "array"
+						"$ref": "#/components/schemas/IData_User_"
 					}
 				},
 				"required": [
@@ -253,6 +290,41 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Partial_User_": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"firstName": {
+						"type": "string"
+					},
+					"lastName": {
+						"type": "string"
+					},
+					"role": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
 			},
 			"IResponse_Role_": {
 				"properties": {
@@ -283,7 +355,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users-or-permissions__": {
+			"Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users__": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -293,22 +365,46 @@
 					},
 					"root": {
 						"type": "boolean"
+					},
+					"permissions": {
+						"items": {
+							"$ref": "#/components/schemas/Permissions"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
 					"name",
 					"description",
-					"root"
+					"root",
+					"permissions"
 				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
 			},
-			"Omit_Role.id-or-createAt-or-updateAt-or-users-or-permissions_": {
-				"$ref": "#/components/schemas/Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users-or-permissions__",
+			"Omit_Role.id-or-createAt-or-updateAt-or-users_": {
+				"$ref": "#/components/schemas/Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users__",
 				"description": "Construct a type with the properties of T except for those in type K."
 			},
 			"IRolePayload": {
-				"$ref": "#/components/schemas/Omit_Role.id-or-createAt-or-updateAt-or-users-or-permissions_"
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Omit_Role.id-or-createAt-or-updateAt-or-users_"
+					},
+					{
+						"properties": {
+							"$clear": {},
+							"$add": {},
+							"permissions": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							}
+						},
+						"type": "object"
+					}
+				]
 			},
 			"IResponse_Array_Role__": {
 				"properties": {
@@ -342,6 +438,39 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Partial_IRolePayload_": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"root": {
+						"type": "boolean"
+					},
+					"permissions": {
+						"allOf": [
+							{
+								"items": {
+									"$ref": "#/components/schemas/Permissions"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							}
+						]
+					},
+					"$add": {},
+					"$clear": {}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
 			"IResponse_Permissions_": {
 				"properties": {
 					"code": {
@@ -373,9 +502,6 @@
 			},
 			"Pick_Permissions.Exclude_keyofPermissions.id-or-createAt-or-updateAt__": {
 				"properties": {
-					"role": {
-						"$ref": "#/components/schemas/Role"
-					},
 					"role_id": {
 						"type": "string"
 					},
@@ -384,13 +510,16 @@
 					},
 					"value": {
 						"type": "string"
+					},
+					"roles": {
+						"$ref": "#/components/schemas/Role"
 					}
 				},
 				"required": [
-					"role",
 					"role_id",
 					"resource",
-					"value"
+					"value",
+					"roles"
 				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
@@ -465,6 +594,24 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"Partial_IPermissionPayload_": {
+				"properties": {
+					"role_id": {
+						"type": "string"
+					},
+					"resource": {
+						"type": "string"
+					},
+					"value": {
+						"type": "string"
+					},
+					"roles": {
+						"$ref": "#/components/schemas/Role"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
 			},
 			"Token": {
 				"properties": {
@@ -579,6 +726,35 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"IResponse_Partial_User__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"data": {
+						"$ref": "#/components/schemas/Partial_User_"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {
@@ -587,6 +763,11 @@
 				"name": "Authorization",
 				"in": "header",
 				"description": "Enter the token with the `Bearer: ` prefix, e.g. Bearer abcde12345"
+			},
+			"Cookie": {
+				"type": "apiKey",
+				"name": "token",
+				"in": "cookie"
 			}
 		}
 	},
@@ -643,7 +824,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IResponse_Array_User__"
+									"$ref": "#/components/schemas/IResponse_IData_User__"
 								}
 							}
 						}
@@ -655,9 +836,31 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/users/{id}": {
@@ -681,6 +884,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": [
@@ -693,6 +899,52 @@
 						}
 					}
 				]
+			},
+			"put": {
+				"operationId": "UpdateUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_User_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_User_"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/roles": {
@@ -750,6 +1002,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": []
@@ -776,6 +1031,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": [
@@ -788,6 +1046,52 @@
 						}
 					}
 				]
+			},
+			"put": {
+				"operationId": "UpdateRole",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Role_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Role"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_IRolePayload_"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/permissions": {
@@ -845,6 +1149,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": []
@@ -871,6 +1178,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": []
@@ -897,6 +1207,91 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdatePermission",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Permissions_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Permissions"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Partial_IPermissionPayload_"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeletePermission",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Permissions_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Permissions"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": [
@@ -1026,11 +1421,40 @@
 					}
 				}
 			}
+		},
+		"/auth/me": {
+			"get": {
+				"operationId": "GetMe",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Partial_User__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Auth"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": []
+			}
 		}
 	},
 	"servers": [
 		{
-			"url": "https://https://server1.test/"
+			"url": "https://server1.test/"
 		}
 	]
 }

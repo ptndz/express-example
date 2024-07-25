@@ -1,7 +1,7 @@
 import { Router } from "express";
 import AuthController from "../controllers/auth";
 import { body } from "express-validator";
-import { validate } from "../middlewares";
+import { authAccessToken, validate } from "../middlewares";
 
 const router = Router();
 
@@ -41,5 +41,9 @@ router.post(
 		return res.status(response.code).send(response);
 	}
 );
-
+router.get("/me", authAccessToken, async (req, res) => {
+	const controller = new AuthController();
+	const response = await controller.getMe(req);
+	return res.status(response.code).send(response);
+});
 export default router;
