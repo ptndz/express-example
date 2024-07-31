@@ -1,7 +1,7 @@
 import { AppDataSource } from "../data-source";
 import { Role } from "../entity/Role";
 import { User } from "../entity/User";
-import { IData } from "../types";
+import { Pagination } from "../types";
 
 export type IUserPayload = Omit<User, "id" | "createAt" | "updateAt"> & {
 	roleId: string;
@@ -21,16 +21,44 @@ export const getUserByUserName = async (username: string): Promise<User | null> 
 		where: {
 			username,
 		},
+		relations: ["role"],
 	});
 	if (!user) return null;
-	return user;
+
+	return {
+		...user,
+		role_id: user.role ? user.role.id : null,
+		role: undefined,
+	} as any;
 };
-export const getUsers = async (page = 1, limit = 2): Promise<IData<User>> => {
+export const getUserByEmail = async (email: string): Promise<User | null> => {
+	const user = await User.findOne({
+		where: {
+			email,
+		},
+		relations: ["role"],
+	});
+	if (!user) return null;
+	return {
+		...user,
+		role_id: user.role ? user.role.id : null,
+		role: undefined,
+	} as any;
+};
+export const getUserByRoleId = async (
+	roleId: string,
+	page = 1,
+	limit = 2
+): Promise<Pagination<User>> => {
 	const [items, total] = await AppDataSource.getRepository(User).findAndCount({
 		skip: (page - 1) * limit,
 		take: limit,
+		where: {
+			role: {
+				id: roleId,
+			},
+		},
 	});
-
 	const totalPages = Math.ceil(total / limit);
 	return {
 		total: total,
@@ -38,6 +66,27 @@ export const getUsers = async (page = 1, limit = 2): Promise<IData<User>> => {
 		current_page: page,
 		last_page: totalPages,
 		items: items,
+	};
+};
+export const getUsers = async (page = 1, limit = 100): Promise<Pagination<User>> => {
+	const [items, total] = await AppDataSource.getRepository(User).findAndCount({
+		skip: (page - 1) * limit,
+		take: limit,
+		relations: ["role"],
+	});
+	const transformedItems = items.map((user) => ({
+		...user,
+		role_id: user.role ? user.role.id : null, // Assuming `role` has an `id` field
+		role: undefined,
+	})) as any;
+
+	const totalPages = Math.ceil(total / limit);
+	return {
+		total: total,
+		per_page: limit,
+		current_page: page,
+		last_page: totalPages,
+		items: transformedItems,
 	};
 };
 
@@ -100,9 +149,8 @@ export const updateRoleListUsers = async (roleId: string, userIds: string[]) => 
 		return null;
 	}
 };
-export const removeRoleListUsers = async ( userIds: string[]) => {
+export const removeRoleListUsers = async (userIds: string[]) => {
 	try {
-		
 		const arrayUserId: any = [];
 		userIds.map((id) => {
 			arrayUserId.push({

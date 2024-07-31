@@ -1,23 +1,26 @@
-import "reflect-metadata";
 import dotenv from "dotenv";
 dotenv.config();
-import express, { Express } from "express";
-import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import http from "http";
-import { Server as SocketIO } from "socket.io";
-import { ParamsDictionary } from "express-serve-static-core";
-import { ParsedQs } from "qs";
+import "reflect-metadata";
 import { ORIGIN, __prod__ } from "./constants";
-import socket from "./routers/socket";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Express } from "express";
+import { ParamsDictionary } from "express-serve-static-core";
+import helmet from "helmet";
+import http from "http";
+import morgan from "morgan";
+import { ParsedQs } from "qs";
+import { Server as SocketIO } from "socket.io";
+import path from "path";
+import swaggerUi from "swagger-ui-express";
+import configureMorgan from "./config/log";
+import { AppDataSource } from "./data-source";
 import { socketMiddleware } from "./middlewares/auth";
 import router from "./routers";
-import { AppDataSource } from "./data-source";
-import swaggerUi from "swagger-ui-express";
+import socket from "./routers/socket";
 
+const logDirectory = path.join(__dirname, "logs");
 AppDataSource.initialize()
 	.then(async () => {
 		const app: Express = express();
@@ -36,8 +39,8 @@ AppDataSource.initialize()
 				optionsSuccessStatus: 200,
 			})
 		);
+		__prod__ ? configureMorgan(app, logDirectory) : app.use(morgan("dev"));
 
-		app.use(morgan("dev"));
 		app.set("trust proxy", 1);
 
 		app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
@@ -71,6 +74,7 @@ AppDataSource.initialize()
 			})
 		);
 		app.use("/", router);
+
 		const io = new SocketIO(server, {
 			cors: {
 				origin: ORIGIN,
@@ -78,7 +82,11 @@ AppDataSource.initialize()
 			},
 		});
 
-		io.engine.use(helmet());
+		io.engine.use(
+			helmet({
+				crossOriginResourcePolicy: false,
+			})
+		);
 		io.use((socket, next) => {
 			socketMiddleware(socket, next);
 		});

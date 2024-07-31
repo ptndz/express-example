@@ -18,13 +18,13 @@
 					"email": {
 						"type": "string"
 					},
+					"name": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					},
 					"password": {
-						"type": "string"
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"lastName": {
 						"type": "string"
 					},
 					"role": {
@@ -34,6 +34,12 @@
 							}
 						],
 						"nullable": true
+					},
+					"files": {
+						"items": {
+							"$ref": "#/components/schemas/File"
+						},
+						"type": "array"
 					},
 					"createAt": {
 						"type": "string",
@@ -48,10 +54,11 @@
 					"id",
 					"username",
 					"email",
+					"name",
+					"image",
 					"password",
-					"firstName",
-					"lastName",
 					"role",
+					"files",
 					"createAt",
 					"updateAt"
 				],
@@ -144,6 +151,57 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"File": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"disk": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"path": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"size": {
+						"type": "string"
+					},
+					"checksum": {
+						"type": "string"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"disk",
+					"name",
+					"path",
+					"type",
+					"size",
+					"checksum",
+					"user",
+					"createAt",
+					"updateAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"IResponse_User_": {
 				"properties": {
 					"code": {
@@ -156,12 +214,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"$ref": "#/components/schemas/User"
 					}
@@ -181,26 +234,33 @@
 					"email": {
 						"type": "string"
 					},
+					"name": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					},
 					"password": {
-						"type": "string"
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"lastName": {
 						"type": "string"
 					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
+					},
+					"files": {
+						"items": {
+							"$ref": "#/components/schemas/File"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
 					"username",
 					"email",
+					"name",
+					"image",
 					"password",
-					"firstName",
-					"lastName",
-					"role"
+					"role",
+					"files"
 				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
@@ -227,7 +287,7 @@
 					}
 				]
 			},
-			"IData_User_": {
+			"Pagination_User_": {
 				"properties": {
 					"total": {
 						"type": "number",
@@ -262,7 +322,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IResponse_IData_User__": {
+			"IResponse_Pagination_User__": {
 				"properties": {
 					"code": {
 						"type": "number",
@@ -274,14 +334,9 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
-						"$ref": "#/components/schemas/IData_User_"
+						"$ref": "#/components/schemas/Pagination_User_"
 					}
 				},
 				"required": [
@@ -302,17 +357,23 @@
 					"email": {
 						"type": "string"
 					},
+					"name": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					},
 					"password": {
-						"type": "string"
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"lastName": {
 						"type": "string"
 					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
+					},
+					"files": {
+						"items": {
+							"$ref": "#/components/schemas/File"
+						},
+						"type": "array"
 					},
 					"createAt": {
 						"type": "string",
@@ -338,12 +399,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"$ref": "#/components/schemas/Role"
 					}
@@ -418,12 +474,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"items": {
 							"$ref": "#/components/schemas/Role"
@@ -483,12 +534,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"$ref": "#/components/schemas/Permissions"
 					}
@@ -543,12 +589,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"items": {
 							"$ref": "#/components/schemas/Permissions"
@@ -575,12 +616,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"items": {
 							"type": "string"
@@ -613,6 +649,135 @@
 				"type": "object",
 				"description": "Make all properties in T optional"
 			},
+			"Media": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"url": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"size": {
+						"type": "number",
+						"format": "double"
+					},
+					"type": {
+						"type": "string"
+					},
+					"disk": {
+						"type": "string"
+					},
+					"path": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string"
+					},
+					"updatedAt": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"url",
+					"name",
+					"size",
+					"type",
+					"disk",
+					"path",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Pagination_Media_": {
+				"properties": {
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"per_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"current_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"last_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/Media"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"total",
+					"per_page",
+					"current_page",
+					"last_page",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Pagination_Media__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {},
+					"data": {
+						"$ref": "#/components/schemas/Pagination_Media_"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_File_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {},
+					"data": {
+						"$ref": "#/components/schemas/File"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Token": {
 				"properties": {
 					"refreshToken": {
@@ -622,11 +787,16 @@
 					"accessToken": {
 						"type": "string",
 						"nullable": true
+					},
+					"expires_in": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
 					"refreshToken",
-					"accessToken"
+					"accessToken",
+					"expires_in"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -643,12 +813,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"$ref": "#/components/schemas/Token"
 					}
@@ -672,12 +837,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"type": "boolean"
 					}
@@ -689,7 +849,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IResponse__accessToken-string-or-null__": {
+			"IResponse__accessToken-string-or-null--expires_in-number--refreshToken-string__": {
 				"properties": {
 					"code": {
 						"type": "number",
@@ -701,20 +861,24 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"properties": {
+							"refreshToken": {
+								"type": "string"
+							},
+							"expires_in": {
+								"type": "number",
+								"format": "double"
+							},
 							"accessToken": {
 								"type": "string",
 								"nullable": true
 							}
 						},
 						"required": [
+							"refreshToken",
+							"expires_in",
 							"accessToken"
 						],
 						"type": "object"
@@ -739,12 +903,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
+					"errors": {},
 					"data": {
 						"$ref": "#/components/schemas/Partial_User_"
 					}
@@ -802,6 +961,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": [],
@@ -824,7 +986,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IResponse_IData_User__"
+									"$ref": "#/components/schemas/IResponse_Pagination_User__"
 								}
 							}
 						}
@@ -947,6 +1109,62 @@
 				}
 			}
 		},
+		"/users/role/{id}": {
+			"get": {
+				"operationId": "GetUserByRoleId",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Pagination_User__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"User"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
 		"/roles": {
 			"post": {
 				"operationId": "CreateRole",
@@ -968,6 +1186,9 @@
 				"security": [
 					{
 						"Bearer": []
+					},
+					{
+						"Cookie": []
 					}
 				],
 				"parameters": [],
@@ -1188,7 +1409,7 @@
 		},
 		"/permissions/{id}": {
 			"get": {
-				"operationId": "GetPermissionByRoleId",
+				"operationId": "GetPermission",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -1306,6 +1527,133 @@
 				]
 			}
 		},
+		"/files": {
+			"get": {
+				"operationId": "GetFiles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Pagination_Media__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"File"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateFile",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_File_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"File"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"files": {
+										"items": {
+											"type": "string",
+											"format": "binary"
+										},
+										"type": "array"
+									}
+								},
+								"required": [
+									"files"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		"/files/download/u/{uuid}": {
+			"get": {
+				"operationId": "DownloadFile",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"File"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/files/{yyyy}/{mm}/{dd}/{name}": {
+			"get": {
+				"operationId": "GetFile",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"tags": [
+					"File"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/auth/login": {
 			"post": {
 				"operationId": "Login",
@@ -1391,7 +1739,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IResponse__accessToken-string-or-null__"
+									"$ref": "#/components/schemas/IResponse__accessToken-string-or-null--expires_in-number--refreshToken-string__"
 								}
 							}
 						}
@@ -1454,7 +1802,7 @@
 	},
 	"servers": [
 		{
-			"url": "https://server1.test/"
+			"url": "/"
 		}
 	]
 }

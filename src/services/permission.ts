@@ -48,13 +48,22 @@ export const getPermissions = async (): Promise<Permissions[]> => {
 	return await Permissions.find();
 };
 
-export const getPermissionByRoleId = async (roleId: string): Promise<Permissions | null> => {
+export const getPermissionsByRoleId = async (roleId: string): Promise<Permissions[] | null> => {
 	if (roleId === undefined) {
 		return null;
 	}
-	const role = await Permissions.findOne({ where: { role_id: roleId } });
-	if (!role) return null;
-	return role;
+	const permissions = await Permissions.find({ where: { role_id: roleId } });
+	if (!permissions) return null;
+	return permissions;
+};
+
+export const getPermission = async (permission: string): Promise<Permissions | null> => {
+	if (permission === undefined) {
+		return null;
+	}
+	const permissions = await Permissions.findOne({ where: { id: permission } });
+
+	return permissions;
 };
 export const updatePermission = async (id: string, updateData: Partial<Permissions>) => {
 	await Permissions.update(id, updateData);

@@ -7,9 +7,10 @@ import {
 	UpdateDateColumn,
 	JoinColumn,
 	ManyToOne,
+	OneToMany,
 } from "typeorm";
 import { Role } from "./Role";
-
+import { File } from "./File";
 @Entity()
 export class User extends BaseEntity {
 	@PrimaryGeneratedColumn("uuid")
@@ -22,17 +23,20 @@ export class User extends BaseEntity {
 	email!: string;
 
 	@Column()
+	name!: string;
+
+	@Column()
+	image!: string;
+
+	@Column()
 	password!: string;
-
-	@Column()
-	firstName!: string;
-
-	@Column()
-	lastName!: string;
 
 	@ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
 	@JoinColumn()
 	role!: Role | null;
+
+	@OneToMany(() => File, (file) => file.user)
+	files!: File[];
 
 	@CreateDateColumn({
 		type: "timestamp",

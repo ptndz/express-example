@@ -2,15 +2,15 @@ import { Route, Tags, Post, Body, Get, Path, Security, Put } from "tsoa";
 import { IRolePayload, createRole, getRole, getRoles, updateRole } from "../services/role";
 import { Role } from "../entity/Role";
 import { IResponse } from "../types";
-import { createListPermissions, createPermission } from "../services/permission";
+import { createListPermissions, getPermissionsByRoleId } from "../services/permission";
 import { removeKeyObject } from "../utils";
 import { removeRoleListUsers, updateRoleListUsers } from "../services/user";
 
 @Route("roles")
-@Security("Cookie")
 @Tags("Role")
 export default class RoleController {
 	@Security("Bearer")
+	@Security("Cookie")
 	@Post("/")
 	public async createRole(@Body() body: IRolePayload): Promise<IResponse<Role>> {
 		const role = await createRole(body);
@@ -36,7 +36,12 @@ export default class RoleController {
 	@Get("/:id")
 	public async getRole(@Path() id: string): Promise<IResponse<Role>> {
 		const role = await getRole(id);
+		const permission = await getPermissionsByRoleId(id);
+
 		if (role) {
+			if (permission) {
+				role.permissions = permission;
+			}
 			return {
 				code: 200,
 				success: true,

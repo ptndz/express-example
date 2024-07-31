@@ -41,7 +41,7 @@ router.get(
 	async (req, res) => {
 		const controller = new PermissionController();
 		const id = req.params.id;
-		const response = await controller.getPermissionByRoleId(id);
+		const response = await controller.getPermission(id);
 		return res.status(response.code).send(response);
 	}
 );

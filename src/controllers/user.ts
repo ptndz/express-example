@@ -1,8 +1,15 @@
 import { Route, Tags, Post, Body, Get, Path, Security, Put, Query } from "tsoa";
-import { createUser, getUsers, getUser, updateUser, IUserPayload } from "../services/user";
+import {
+	createUser,
+	getUsers,
+	getUser,
+	updateUser,
+	IUserPayload,
+	getUserByRoleId,
+} from "../services/user";
 import { User } from "../entity/User";
 import { getRole } from "../services/role";
-import { IData, IResponse } from "../types";
+import { Pagination, IResponse } from "../types";
 import argon2d from "argon2";
 import { removeKeyObject, removeKeyObjectArray } from "../utils";
 
@@ -10,6 +17,7 @@ import { removeKeyObject, removeKeyObjectArray } from "../utils";
 @Tags("User")
 export default class UserController {
 	@Security("Bearer")
+	@Security("Cookie")
 	@Post("/")
 	public async createUser(@Body() body: IUserPayload): Promise<IResponse<User>> {
 		const role = await getRole(body.roleId);
@@ -35,7 +43,7 @@ export default class UserController {
 	public async getUsers(
 		@Query("page") page: number,
 		@Query("limit") limit: number
-	): Promise<IResponse<IData<User>>> {
+	): Promise<IResponse<Pagination<User>>> {
 		const users = await getUsers(page, limit);
 		const data = removeKeyObjectArray(users.items, ["password"]);
 		users.items = data as User[];
@@ -82,6 +90,28 @@ export default class UserController {
 				code: 200,
 				success: true,
 				data: Idata,
+			};
+		}
+		return {
+			code: 500,
+			success: false,
+			message: "Khong thanh cong",
+		};
+	}
+	@Security("Bearer")
+	@Security("Cookie")
+	@Get("/role/:id")
+	public async getUserByRoleId(
+		@Path() id: string,
+		@Query("page") page: number,
+		@Query("limit") limit: number
+	): Promise<IResponse<Pagination<User>>> {
+		const data = await getUserByRoleId(id, page, limit);
+		if (data) {
+			return {
+				code: 200,
+				success: true,
+				data: data,
 			};
 		}
 		return {

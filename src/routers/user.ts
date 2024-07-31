@@ -13,8 +13,7 @@ router.post(
 	validate([
 		body("username").isLength({ min: 5 }),
 		body("email").isEmail(),
-		body("firstName").trim(),
-		body("lastName").trim(),
+		body("name").trim(),
 		body("password").isLength({ min: 5 }),
 		body("roleId").optional().isNumeric().withMessage("roleId should be a numeric value"),
 	]),
@@ -28,7 +27,7 @@ router.post(
 
 router.get("/", authAccessToken, hasPermission("user", "list"), async (req, res) => {
 	const page = parseInt(req.query.page as string) || 1;
-	const limit = parseInt(req.query.limit as string) || 2;
+	const limit = parseInt(req.query.limit as string) || 100;
 	const controller = new UserController();
 	const response = await controller.getUsers(page, limit);
 	return res.status(response.code).send(response);
@@ -46,6 +45,7 @@ router.get(
 		return res.status(response.code).send(response);
 	}
 );
+
 router.put(
 	"/:id",
 	authAccessToken,
@@ -57,6 +57,20 @@ router.put(
 		const data = removeKeyObject(req.body, ["role", "id"]);
 
 		const response = await controller.updateUser(id, data);
+		return res.status(response.code).send(response);
+	}
+);
+router.get(
+	"/role/:id",
+	authAccessToken,
+	hasPermission("user", "list"),
+	validate([param("id").notEmpty().trim()]),
+	async (req, res) => {
+		const page = parseInt(req.query.page as string) || 1;
+		const limit = parseInt(req.query.limit as string) || 2;
+		const controller = new UserController();
+		const id = req.params.id;
+		const response = await controller.getUserByRoleId(id, page, limit);
 		return res.status(response.code).send(response);
 	}
 );

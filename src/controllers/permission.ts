@@ -3,7 +3,7 @@ import {
 	IPermissionPayload,
 	createPermission,
 	deletePermission,
-	getPermissionByRoleId,
+	getPermission,
 	getPermissionResourceActions,
 	getPermissions,
 	updatePermission,
@@ -59,8 +59,8 @@ export default class PermissionController {
 	@Security("Bearer")
 	@Security("Cookie")
 	@Get("/:id")
-	public async getPermissionByRoleId(@Path() id: string): Promise<IResponse<Permissions>> {
-		const permission = await getPermissionByRoleId(id);
+	public async getPermission(@Path() id: string): Promise<IResponse<Permissions>> {
+		const permission = await getPermission(id);
 		if (permission) {
 			return {
 				code: 200,

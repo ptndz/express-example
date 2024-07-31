@@ -5,6 +5,7 @@ import { DataSource } from "typeorm";
 import { User } from "./entity/User";
 import { Role } from "./entity/Role";
 import { Permissions } from "./entity/Permissions";
+import { File } from "./entity/File";
 
 export const AppDataSource = new DataSource({
 	type: "mysql",
@@ -14,9 +15,9 @@ export const AppDataSource = new DataSource({
 	password: process.env.DB_PASSWORD,
 	database: process.env.DB_DATABASE,
 	synchronize: true,
-	logging: true,
+	logging: false,
 	...(__prod__ ? {} : { synchronize: true }),
-	entities: [User, Role, Permissions],
+	entities: [User, Role, Permissions, File],
 
 	migrations: [path.join(__dirname, "/migrations/*")],
 });

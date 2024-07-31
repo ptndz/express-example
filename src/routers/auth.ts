@@ -1,6 +1,6 @@
 import { Router } from "express";
-import AuthController from "../controllers/auth";
 import { body } from "express-validator";
+import AuthController from "../controllers/auth";
 import { authAccessToken, validate } from "../middlewares";
 
 const router = Router();
@@ -24,7 +24,7 @@ router.post(
 
 router.post(
 	"/login",
-	validate([body("username").isLength({ min: 5 }), body("password").isLength({ min: 5 })]),
+	validate([body("username").isLength({ min: 4 }), body("password").isLength({ min: 5 })]),
 	async (req, res) => {
 		const controller = new AuthController();
 		const response = await controller.login(req.body);

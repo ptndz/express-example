@@ -11,8 +11,8 @@ export const authAccessToken = async (req: Request, res: Response, next: NextFun
 			: req.cookies["token"];
 
 		if (!accessToken) {
-			return res.status(403).json({
-				code: 403,
+			return res.status(401).json({
+				code: 401,
 				success: false,
 				message: "Access token provided!",
 			});
@@ -20,7 +20,7 @@ export const authAccessToken = async (req: Request, res: Response, next: NextFun
 		const decodedUser = await JwtVerifyAccessToken(accessToken as string);
 		if (decodedUser.error) {
 			return res.status(401).send({
-				code: 403,
+				code: 401,
 				success: false,
 				message: decodedUser.error.message,
 			});

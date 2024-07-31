@@ -1,5 +1,11 @@
 import { Route, Tags, Post, Body, Get, Security, Request } from "tsoa";
-import { createUser, getUser, getUserByUserName, IUserPayload } from "../services/user";
+import {
+	createUser,
+	getUser,
+	getUserByEmail,
+	getUserByUserName,
+	IUserPayload,
+} from "../services/user";
 
 import argon2 from "argon2";
 import { IResponse, Token } from "../types";
@@ -18,10 +24,12 @@ export default class AuthController {
 		@Body() body: { username: string; password: string }
 	): Promise<IResponse<Token>> {
 		try {
-			const user = await getUserByUserName(body.username);
+			const user: any = body.username.includes("@")
+				? await getUserByEmail(body.username)
+				: getUserByUserName(body.username);
 			if (!user) {
 				return {
-					code: 401,
+					code: 404,
 					success: false,
 					message: "Tai khoan khong ton tai",
 				};
@@ -37,23 +45,27 @@ export default class AuthController {
 						message: token.error.message,
 					};
 				}
-
+				const data = removeKeyObject(user, ["password"]);
 				return {
 					code: 200,
 					success: true,
 					data: {
+						...data,
 						refreshToken: token.refreshToken,
 						accessToken: token.accessToken,
+						expires_in: DAY_TIME,
 					},
 				};
 			} else {
 				return {
-					code: 401,
+					code: 404,
 					success: false,
 					message: "Tai khoan khong ton tai",
 				};
 			}
 		} catch (error) {
+			console.log(error);
+
 			return {
 				code: 500,
 				success: false,
@@ -84,7 +96,7 @@ export default class AuthController {
 	@Post("/refresh-token")
 	public async refreshToken(
 		@Body() body: { refreshToken: string }
-	): Promise<IResponse<{ accessToken: string | null }>> {
+	): Promise<IResponse<{ accessToken: string | null; expires_in: number; refreshToken: string }>> {
 		const refreshToken = body.refreshToken;
 
 		if (!refreshToken)
@@ -132,7 +144,7 @@ export default class AuthController {
 			return {
 				success: true,
 				code: 200,
-				data: { accessToken: token.data },
+				data: { accessToken: token.data, expires_in: DAY_TIME, refreshToken: body.refreshToken },
 			};
 		} catch (error) {
 			return {

@@ -3,7 +3,6 @@
 	"noImplicitAdditionalProperties": "throw-on-extras",
 	"controllerPathGlobs": ["src/controllers/*.ts"],
 	"spec": {
-		"host": "server1.test",
 		"outputDirectory": "public",
 		"specVersion": 3,
 		"securityDefinitions": {
