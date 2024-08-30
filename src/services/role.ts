@@ -7,7 +7,7 @@ export type IRolePayload = Omit<Role, "id" | "createAt" | "updateAt" | "users"> 
 };
 
 export const createRole = async (role: IRolePayload): Promise<Role> => {
-	const data = await Role.create(role);
+	const data =  Role.create(role);
 	return await data.save();
 };
 

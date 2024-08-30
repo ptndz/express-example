@@ -27,6 +27,12 @@
 					"password": {
 						"type": "string"
 					},
+					"devices": {
+						"items": {
+							"$ref": "#/components/schemas/Device"
+						},
+						"type": "array"
+					},
 					"role": {
 						"allOf": [
 							{
@@ -57,8 +63,48 @@
 					"name",
 					"image",
 					"password",
+					"devices",
 					"role",
 					"files",
+					"createAt",
+					"updateAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Device": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"agent": {
+						"type": "string"
+					},
+					"ip": {
+						"type": "string"
+					},
+					"subscription": {
+						"type": "string"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"agent",
+					"ip",
+					"subscription",
+					"user",
 					"createAt",
 					"updateAt"
 				],
@@ -243,6 +289,12 @@
 					"password": {
 						"type": "string"
 					},
+					"devices": {
+						"items": {
+							"$ref": "#/components/schemas/Device"
+						},
+						"type": "array"
+					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					},
@@ -259,6 +311,7 @@
 					"name",
 					"image",
 					"password",
+					"devices",
 					"role",
 					"files"
 				],
@@ -365,6 +418,12 @@
 					},
 					"password": {
 						"type": "string"
+					},
+					"devices": {
+						"items": {
+							"$ref": "#/components/schemas/Device"
+						},
+						"type": "array"
 					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
@@ -648,6 +707,30 @@
 				},
 				"type": "object",
 				"description": "Make all properties in T optional"
+			},
+			"IResponse_string_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"errors": {},
+					"data": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"Media": {
 				"properties": {
@@ -1525,6 +1608,54 @@
 						}
 					}
 				]
+			}
+		},
+		"/notification/subscription": {
+			"post": {
+				"operationId": "CreateDevice",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_string_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Notification"
+				],
+				"security": [
+					{
+						"Bearer": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"agent": {
+										"type": "string"
+									},
+									"subscription": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"agent",
+									"subscription"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/files": {

@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Role } from "./Role";
 import { File } from "./File";
+import {Device} from "./Device";
 @Entity()
 export class User extends BaseEntity {
 	@PrimaryGeneratedColumn("uuid")
@@ -30,6 +31,9 @@ export class User extends BaseEntity {
 
 	@Column()
 	password!: string;
+
+	@OneToMany(() => Device, (device) => device.user)
+	devices!: Device[];
 
 	@ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
 	@JoinColumn()
