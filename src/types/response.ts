@@ -2,7 +2,7 @@ export interface IResponse<T> {
 	code: number;
 	success: boolean;
 	message?: string;
-	errors?: any;
+	error?: any;
 	data?: T;
 }
 export interface Token {

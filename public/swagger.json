@@ -260,7 +260,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/User"
 					}
@@ -387,7 +387,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Pagination_User_"
 					}
@@ -458,7 +458,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Role"
 					}
@@ -533,7 +533,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"items": {
 							"$ref": "#/components/schemas/Role"
@@ -593,7 +593,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Permissions"
 					}
@@ -648,7 +648,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"items": {
 							"$ref": "#/components/schemas/Permissions"
@@ -675,7 +675,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"items": {
 							"type": "string"
@@ -720,7 +720,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"type": "string"
 					}
@@ -825,7 +825,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Pagination_Media_"
 					}
@@ -849,7 +849,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/File"
 					}
@@ -896,7 +896,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Token"
 					}
@@ -920,7 +920,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"type": "boolean"
 					}
@@ -944,7 +944,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"properties": {
 							"refreshToken": {
@@ -986,7 +986,7 @@
 					"message": {
 						"type": "string"
 					},
-					"errors": {},
+					"error": {},
 					"data": {
 						"$ref": "#/components/schemas/Partial_User_"
 					}

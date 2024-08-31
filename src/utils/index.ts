@@ -3,6 +3,7 @@ export * from "./createI18n";
 export * from "./strFirstLetter";
 export * from "./removeVietnameseTones";
 export * from "./strToCapitalize";
+export * from "./changeMimeType";
 
 function typeoOf(value: any) {
     return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();

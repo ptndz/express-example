@@ -1,3 +1,3 @@
 export interface IError {
-	errors: Array<string>;
+	error: Array<string>;
 }

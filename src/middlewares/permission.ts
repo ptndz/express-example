@@ -9,7 +9,7 @@ export const hasPermission = (resource: string, action: string) => {
                 return res.status(401).json({
                     code: 401,
                     success: false,
-                    errors: [`AuthorizeUser is not logged in yet`],
+                    error: [`AuthorizeUser is not logged in yet`],
                 });
             }
 
@@ -18,7 +18,7 @@ export const hasPermission = (resource: string, action: string) => {
                 return res.status(401).json({
                     code: 401,
                     success: false,
-                    errors: [`User does not have permission to ${action}.`],
+                    error: [`User does not have permission to ${action}.`],
                 });
             }
             if (user.role.root) {
@@ -34,7 +34,7 @@ export const hasPermission = (resource: string, action: string) => {
                 return res.status(401).json({
                     code: 401,
                     success: false,
-                    errors: [`User does not have permission to ${action}.`],
+                    error: [`User does not have permission to ${action}.`],
                 });
             }
             return next();
@@ -42,7 +42,7 @@ export const hasPermission = (resource: string, action: string) => {
             return res.status(500).json({
                 code: 500,
                 success: false,
-                errors: [`Error checking permissions`],
+                error: [`Error checking permissions`],
             });
         }
     };
