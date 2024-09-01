@@ -6,9 +6,12 @@ export const validate = (validations: ContextRunner[]) => {
     for (const validation of validations) {
       const result = await validation.run(req);
       if (!result.isEmpty()) {
-        return res
-          .status(400)
-          .json({ code: 400, success: false, error: result.array() });
+        return res.status(400).json({
+          code: 400,
+          success: false,
+          message: result?.array()?.[0].msg ?? "",
+          error: result?.array()?.[0].msg ?? "",
+        });
       }
     }
     return next();

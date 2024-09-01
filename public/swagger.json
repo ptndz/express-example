@@ -470,56 +470,39 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users__": {
-				"properties": {
-					"name": {
+			"Record_string.string-Array_": {
+				"properties": {},
+				"additionalProperties": {
+					"items": {
 						"type": "string"
 					},
-					"description": {
-						"type": "string"
+					"type": "array"
+				},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"IRolePayload": {
+				"properties": {
+					"$clear": {
+						"$ref": "#/components/schemas/Record_string.string-Array_"
+					},
+					"$add": {
+						"$ref": "#/components/schemas/Record_string.string-Array_"
 					},
 					"root": {
 						"type": "boolean"
 					},
-					"permissions": {
-						"items": {
-							"$ref": "#/components/schemas/Permissions"
-						},
-						"type": "array"
+					"description": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
 					}
 				},
 				"required": [
-					"name",
-					"description",
-					"root",
-					"permissions"
+					"name"
 				],
-				"type": "object",
-				"description": "From T, pick a set of properties whose keys are in the union K"
-			},
-			"Omit_Role.id-or-createAt-or-updateAt-or-users_": {
-				"$ref": "#/components/schemas/Pick_Role.Exclude_keyofRole.id-or-createAt-or-updateAt-or-users__",
-				"description": "Construct a type with the properties of T except for those in type K."
-			},
-			"IRolePayload": {
-				"allOf": [
-					{
-						"$ref": "#/components/schemas/Omit_Role.id-or-createAt-or-updateAt-or-users_"
-					},
-					{
-						"properties": {
-							"$clear": {},
-							"$add": {},
-							"permissions": {
-								"items": {
-									"type": "string"
-								},
-								"type": "array"
-							}
-						},
-						"type": "object"
-					}
-				]
+				"type": "object"
 			},
 			"IResponse_Array_Role__": {
 				"properties": {
@@ -559,24 +542,12 @@
 					"root": {
 						"type": "boolean"
 					},
-					"permissions": {
-						"allOf": [
-							{
-								"items": {
-									"$ref": "#/components/schemas/Permissions"
-								},
-								"type": "array"
-							},
-							{
-								"items": {
-									"type": "string"
-								},
-								"type": "array"
-							}
-						]
+					"$add": {
+						"$ref": "#/components/schemas/Record_string.string-Array_"
 					},
-					"$add": {},
-					"$clear": {}
+					"$clear": {
+						"$ref": "#/components/schemas/Record_string.string-Array_"
+					}
 				},
 				"type": "object",
 				"description": "Make all properties in T optional"
