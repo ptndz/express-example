@@ -36,7 +36,7 @@ AppDataSource.initialize()
     app.use(cookieParser());
     app.use(
       cors({
-        origin: ORIGIN,
+        origin: "*",
         methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH", "OPTIONS"],
         credentials: true,
         optionsSuccessStatus: 200,

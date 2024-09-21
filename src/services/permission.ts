@@ -145,17 +145,25 @@ export const getPermissionByRoleIdByResource = async (
   return permission;
 };
 export const getEntityTableNames = async () => {
-  const entityMetadatas = AppDataSource.entityMetadatas;
-  return entityMetadatas.map((metadata) => metadata.tableName);
+  try {
+    const entityMetadatas = await AppDataSource.entityMetadatas;
+    return entityMetadatas.map((metadata) => metadata.tableName);
+  } catch (e) {
+    return [];
+  }
 };
 export const getPermissionResourceActions = async () => {
-  const permissions = await getEntityTableNames();
-  const result: string[] = [];
+  try {
+    const permissions = await getEntityTableNames();
+    const result: string[] = [];
 
-  permissions.forEach((permission) => {
-    PERMISSIONS_ACTIONS.forEach((action) => {
-      result.push(`${permission}.${action}`);
+    permissions.forEach((permission) => {
+      PERMISSIONS_ACTIONS.forEach((action) => {
+        result.push(`${permission}.${action}`);
+      });
     });
-  });
-  return result;
+    return result;
+  } catch (e) {
+    return [];
+  }
 };

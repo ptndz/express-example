@@ -26,7 +26,6 @@ export const getRole = async (id: string): Promise<Role | null> => {
   if (id === undefined) {
     return null;
   }
-  console.log(id);
 
   const role = await Role.findOne({ where: { id } });
   if (!role) return null;

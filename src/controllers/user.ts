@@ -23,7 +23,7 @@ export default class UserController {
     @Body() body: IUserPayload
   ): Promise<IResponse<User>> {
     const role = await getRole(body.roleId);
-    role && role != null ? (body.role = role) : null;
+    role && role !== null ? (body.role = role) : null;
     const user = await createUser(body);
     if (user) {
       const data = removeKeyObject(user, ["password"]) as User;
@@ -62,11 +62,17 @@ export default class UserController {
   @Security("Bearer")
   @Security("Cookie")
   @Get("/:id")
-  public async getUser(@Path() id: string): Promise<IResponse<User>> {
+  public async getUser(@Path() id: string): Promise<IResponse<User & {role_id: string}>> {
     const user = await getUser(id);
 
     if (user) {
-      const data = removeKeyObject(user, ["password"]) as User;
+      const roleId = user.role?.id;
+      const data = {
+        ...removeKeyObject(user, ["password", "createAt", "role"]),
+        role_id: roleId
+      } as User & { role_id: string };
+
+
       return {
         code: 200,
         success: true,

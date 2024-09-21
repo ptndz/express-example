@@ -1,57 +1,83 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	Column,
-	BaseEntity,
-	CreateDateColumn,
-	UpdateDateColumn,
-	JoinColumn,
-	ManyToOne,
-	OneToMany,
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import { Role } from "./Role";
+import { Bookmark } from "./Bookmark";
+import { Device } from "./Device";
 import { File } from "./File";
-import {Device} from "./Device";
+import { Role } from "./Role";
+export type UserStatus =
+  | "Active"
+  | "Inactive"
+  | "Banned"
+  | "Pending"
+  | "Suspended";
+
+// Active - Người dùng đang hoạt động.
+// Inactive - Người dùng không hoạt động.
+// Banned - Người dùng bị cấm.
+// Pending - Tài khoản người dùng đang chờ phê duyệt.
+// Suspended - Tài khoản bị tạm khóa.
+
 @Entity()
 export class User extends BaseEntity {
-	@PrimaryGeneratedColumn("uuid")
-	id!: string;
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-	@Column({ unique: true })
-	username!: string;
+  @Column({ unique: true })
+  username!: string;
 
-	@Column({ unique: true })
-	email!: string;
+  @Column({ unique: true })
+  email!: string;
 
-	@Column()
-	name!: string;
+  @Column()
+  name!: string;
 
-	@Column()
-	image!: string;
+  @Column()
+  image!: string;
 
-	@Column()
-	password!: string;
+  @Column()
+  password!: string;
 
-	@OneToMany(() => Device, (device) => device.user)
-	devices!: Device[];
+  @OneToMany(() => Device, (device) => device.user)
+  devices!: Device[];
 
-	@ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
-	@JoinColumn()
-	role!: Role | null;
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  bookmarks!: Bookmark[];
 
-	@OneToMany(() => File, (file) => file.user)
-	files!: File[];
+  @ManyToOne((_type) => Role, (role: Role) => role.users, { nullable: true })
+  @JoinColumn()
+  role!: Role | null;
 
-	@CreateDateColumn({
-		type: "timestamp",
-		default: () => "CURRENT_TIMESTAMP(6)",
-	})
-	createAt!: Date;
+  @OneToMany(() => File, (file) => file.user)
+  files!: File[];
 
-	@UpdateDateColumn({
-		type: "timestamp",
-		default: () => "CURRENT_TIMESTAMP(6)",
-		onUpdate: "CURRENT_TIMESTAMP(6)",
-	})
-	updateAt!: Date;
+  @Column({ default: false })
+  verified!: boolean;
+  @Column({
+    type: "enum",
+    enum: ["Active", "Inactive", "Banned", "Pending", "Suspended"],
+    default: "Pending",
+  })
+  status!: UserStatus;
+
+  @CreateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+  })
+  createAt!: Date;
+
+  @UpdateDateColumn({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP(6)",
+    onUpdate: "CURRENT_TIMESTAMP(6)",
+  })
+  updateAt!: Date;
 }

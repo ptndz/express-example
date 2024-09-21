@@ -104,6 +104,7 @@ export const getUser = async (id: string): Promise<User | null> => {
     where: {
       id,
     },
+    relations: ["role"],
   });
   if (!user) return null;
   return user;

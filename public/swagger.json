@@ -33,6 +33,12 @@
 						},
 						"type": "array"
 					},
+					"bookmarks": {
+						"items": {
+							"$ref": "#/components/schemas/Bookmark"
+						},
+						"type": "array"
+					},
 					"role": {
 						"allOf": [
 							{
@@ -46,6 +52,12 @@
 							"$ref": "#/components/schemas/File"
 						},
 						"type": "array"
+					},
+					"verified": {
+						"type": "boolean"
+					},
+					"status": {
+						"$ref": "#/components/schemas/UserStatus"
 					},
 					"createAt": {
 						"type": "string",
@@ -64,8 +76,11 @@
 					"image",
 					"password",
 					"devices",
+					"bookmarks",
 					"role",
 					"files",
+					"verified",
+					"status",
 					"createAt",
 					"updateAt"
 				],
@@ -107,6 +122,107 @@
 					"user",
 					"createAt",
 					"updateAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Bookmark": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"url": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"image": {
+						"type": "string"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updateAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"bookmarkTags": {
+						"items": {
+							"$ref": "#/components/schemas/BookmarkTag"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"user",
+					"url",
+					"title",
+					"description",
+					"image",
+					"createAt",
+					"updateAt",
+					"bookmarkTags"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"BookmarkTag": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"bookmark": {
+						"$ref": "#/components/schemas/Bookmark"
+					},
+					"tag": {
+						"$ref": "#/components/schemas/Tag"
+					},
+					"createAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"bookmark",
+					"tag",
+					"createAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Tag": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"bookmarkTags": {
+						"items": {
+							"$ref": "#/components/schemas/BookmarkTag"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"bookmarkTags"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -248,6 +364,16 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"UserStatus": {
+				"type": "string",
+				"enum": [
+					"Active",
+					"Inactive",
+					"Banned",
+					"Pending",
+					"Suspended"
+				]
+			},
 			"IResponse_User_": {
 				"properties": {
 					"code": {
@@ -295,6 +421,12 @@
 						},
 						"type": "array"
 					},
+					"bookmarks": {
+						"items": {
+							"$ref": "#/components/schemas/Bookmark"
+						},
+						"type": "array"
+					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					},
@@ -303,6 +435,12 @@
 							"$ref": "#/components/schemas/File"
 						},
 						"type": "array"
+					},
+					"verified": {
+						"type": "boolean"
+					},
+					"status": {
+						"$ref": "#/components/schemas/UserStatus"
 					}
 				},
 				"required": [
@@ -312,8 +450,11 @@
 					"image",
 					"password",
 					"devices",
+					"bookmarks",
 					"role",
-					"files"
+					"files",
+					"verified",
+					"status"
 				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
@@ -399,6 +540,45 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IResponse_User-and-_role_id-string__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/User"
+							},
+							{
+								"properties": {
+									"role_id": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"role_id"
+								],
+								"type": "object"
+							}
+						]
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Partial_User_": {
 				"properties": {
 					"id": {
@@ -425,6 +605,12 @@
 						},
 						"type": "array"
 					},
+					"bookmarks": {
+						"items": {
+							"$ref": "#/components/schemas/Bookmark"
+						},
+						"type": "array"
+					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					},
@@ -433,6 +619,12 @@
 							"$ref": "#/components/schemas/File"
 						},
 						"type": "array"
+					},
+					"verified": {
+						"type": "boolean"
+					},
+					"status": {
+						"$ref": "#/components/schemas/UserStatus"
 					},
 					"createAt": {
 						"type": "string",
@@ -445,6 +637,121 @@
 				},
 				"type": "object",
 				"description": "Make all properties in T optional"
+			},
+			"IResponse_Tag_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"$ref": "#/components/schemas/Tag"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Pagination_Tag_": {
+				"properties": {
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"per_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"current_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"last_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"total",
+					"per_page",
+					"current_page",
+					"last_page",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Pagination_Tag__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"$ref": "#/components/schemas/Pagination_Tag_"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse__message-string__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"properties": {
+							"message": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"message"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"IResponse_Role_": {
 				"properties": {
@@ -832,6 +1139,152 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IResponse_Bookmark_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"$ref": "#/components/schemas/Bookmark"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICreateBookmarkPayload": {
+				"properties": {
+					"tagIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"image": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"image",
+					"title",
+					"url",
+					"userId"
+				],
+				"type": "object",
+				"description": "Loại dữ liệu để tạo một bookmark mới."
+			},
+			"Pagination_Bookmark_": {
+				"properties": {
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"per_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"current_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"last_page": {
+						"type": "number",
+						"format": "double"
+					},
+					"items": {
+						"items": {
+							"$ref": "#/components/schemas/Bookmark"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"total",
+					"per_page",
+					"current_page",
+					"last_page",
+					"items"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_Pagination_Bookmark__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"$ref": "#/components/schemas/Pagination_Bookmark_"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Partial__url-string--title-string--description-string--image-string--tagIds-number-Array__": {
+				"properties": {
+					"url": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					},
+					"tagIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					}
+				},
+				"type": "object",
+				"description": "Make all properties in T optional"
+			},
+			"IUpdateBookmarkPayload": {
+				"$ref": "#/components/schemas/Partial__url-string--title-string--description-string--image-string--tagIds-number-Array__",
+				"description": "Loại dữ liệu để cập nhật một bookmark."
+			},
 			"Token": {
 				"properties": {
 					"refreshToken": {
@@ -1088,7 +1541,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IResponse_User_"
+									"$ref": "#/components/schemas/IResponse_User-and-_role_id-string__"
 								}
 							}
 						}
@@ -1210,6 +1663,227 @@
 					{
 						"in": "query",
 						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tags": {
+			"post": {
+				"operationId": "CreateTag",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Tag_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Tag"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"name": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"name"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAllTags",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Pagination_Tag__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Tag"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tags/{id}": {
+			"get": {
+				"operationId": "GetTagById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Tag_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Tag"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateTag",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Tag_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Tag"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"name": {
+										"type": "string"
+									}
+								},
+								"type": "object"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteTag",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse__message-string__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Tag"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
 						"required": true,
 						"schema": {
 							"format": "double",
@@ -1754,6 +2428,214 @@
 				],
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/bookmarks": {
+			"post": {
+				"operationId": "CreateBookmark",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Bookmark_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Bookmark"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICreateBookmarkPayload"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "GetAllBookmarks",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Pagination_Bookmark__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Bookmark"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/bookmarks/{id}": {
+			"get": {
+				"operationId": "GetBookmarkById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Bookmark_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Bookmark"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateBookmark",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_Bookmark_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Bookmark"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/IUpdateBookmarkPayload"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteBookmark",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse__message-string__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Bookmark"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		},
 		"/auth/login": {
