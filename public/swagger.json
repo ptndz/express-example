@@ -145,6 +145,10 @@
 						"type": "string",
 						"nullable": true
 					},
+					"summarize": {
+						"type": "string",
+						"nullable": true
+					},
 					"image": {
 						"type": "string"
 					},
@@ -169,6 +173,7 @@
 					"url",
 					"title",
 					"description",
+					"summarize",
 					"image",
 					"createAt",
 					"updateAt",
@@ -753,6 +758,42 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"IResponse__text-string--translated_text-string__": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"properties": {
+							"translated_text": {
+								"type": "string"
+							},
+							"text": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"translated_text",
+							"text"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"IResponse_Role_": {
 				"properties": {
 					"code": {
@@ -1172,6 +1213,9 @@
 						},
 						"type": "array"
 					},
+					"summarize": {
+						"type": "string"
+					},
 					"image": {
 						"type": "string"
 					},
@@ -1256,7 +1300,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Partial__url-string--title-string--description-string--image-string--tagIds-number-Array__": {
+			"Partial__url-string--title-string--description-string--image-string--summarize_63_-string--tagIds-number-Array__": {
 				"properties": {
 					"url": {
 						"type": "string"
@@ -1268,6 +1312,9 @@
 						"type": "string"
 					},
 					"image": {
+						"type": "string"
+					},
+					"summarize": {
 						"type": "string"
 					},
 					"tagIds": {
@@ -1282,7 +1329,7 @@
 				"description": "Make all properties in T optional"
 			},
 			"IUpdateBookmarkPayload": {
-				"$ref": "#/components/schemas/Partial__url-string--title-string--description-string--image-string--tagIds-number-Array__",
+				"$ref": "#/components/schemas/Partial__url-string--title-string--description-string--image-string--summarize_63_-string--tagIds-number-Array__",
 				"description": "Loại dữ liệu để cập nhật một bookmark."
 			},
 			"Token": {
@@ -1888,6 +1935,44 @@
 						"schema": {
 							"format": "double",
 							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/summarize": {
+			"get": {
+				"operationId": "SummarizeWeb",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse__text-string--translated_text-string__"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Summarize"
+				],
+				"security": [
+					{
+						"Bearer": []
+					},
+					{
+						"Cookie": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "url",
+						"required": true,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]

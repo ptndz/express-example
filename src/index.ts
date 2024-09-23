@@ -19,6 +19,7 @@ import { AppDataSource } from "./data-source";
 import { socketMiddleware } from "./middlewares";
 import router from "./routers";
 import socket from "./routers/socket";
+import { startSync } from "./services/meilisearch/sync";
 import { i18n, setLocale } from "./translation";
 
 dotenv.config();
@@ -115,7 +116,7 @@ AppDataSource.initialize()
       socketMiddleware(socket, next);
     });
     socket(io);
-
+    startSync();
     server.listen(port, () => {
       process.on("exit", function () {
         server.close();

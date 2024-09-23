@@ -16,6 +16,7 @@ export type ICreateBookmarkPayload = {
   title: string;
   description?: string;
   image: string;
+  summarize?: string;
   tagIds?: number[]; // Mảng ID của các thẻ
 };
 
@@ -27,6 +28,7 @@ export type IUpdateBookmarkPayload = Partial<{
   title: string;
   description: string;
   image: string;
+  summarize?: string;
   tagIds: number[]; // Mảng ID của các thẻ
 }>;
 

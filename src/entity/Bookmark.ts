@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { User } from "./User";
 import { BookmarkTag } from "./BookmarkTag";
+import { User } from "./User";
 
 @Entity()
 export class Bookmark extends BaseEntity {
@@ -27,6 +27,9 @@ export class Bookmark extends BaseEntity {
 
   @Column({ type: "text", nullable: true })
   description!: string | null;
+
+  @Column({ type: "text", nullable: true })
+  summarize!: string | null;
 
   @Column({ length: 255 })
   image!: string;

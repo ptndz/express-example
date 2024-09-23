@@ -5,6 +5,7 @@ import useBookmark from "./bookmark";
 import useFile from "./file";
 import usePermission from "./permission";
 import useRole from "./role";
+import useSummarize from "./summarize";
 import useTag from "./tag";
 import useUser from "./user";
 
@@ -34,4 +35,5 @@ router.use("/auth", useAuth);
 router.use("/files", useFile);
 router.use("/tags", useTag);
 router.use("/bookmarks", useBookmark);
+router.use("/summarize", useSummarize);
 export default router;

@@ -21,6 +21,7 @@ import {
   IUpdateBookmarkPayload,
   updateBookmark,
 } from "../services/bookmark";
+import { summarizeWebpage } from "../services/summarize";
 import { IResponse, Pagination } from "../types";
 import { removeKeyObject } from "../utils";
 
@@ -33,6 +34,10 @@ export default class BookmarkController {
   public async createBookmark(
     @Body() body: ICreateBookmarkPayload
   ): Promise<IResponse<Bookmark>> {
+    const summarize = await summarizeWebpage(body.url);
+
+    body.summarize = summarize?.translated_text;
+
     const bookmark = await createBookmark(body);
 
     if (bookmark) {
