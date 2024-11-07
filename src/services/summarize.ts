@@ -62,3 +62,26 @@ export async function summarizeWebpage(url: string): Promise<{
     return null;
   }
 }
+
+export async function chatOpenAI(prompt: string) {
+  try {
+    const { data } = await await axios.post(
+      `http://localhost:8001/v1/chat/completions`,
+      {
+        // model: 'gpt-3.5-turbo',
+        model: "gpt-4-1106-preview",
+        messages: prompt,
+        temperature: 0.9,
+        max_tokens: 150,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return data;
+  } catch (error) {
+    return null;
+  }
+}

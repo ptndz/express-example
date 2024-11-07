@@ -37,6 +37,7 @@ export default class BookmarkController {
     const summarize = await summarizeWebpage(body.url);
 
     body.summarize = summarize?.translated_text;
+    console.log(body);
 
     const bookmark = await createBookmark(body);
 
