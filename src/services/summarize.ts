@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-async function fetchHTML(url: string): Promise<string> {
+export async function fetchHTML(url: string): Promise<string> {
   try {
     const { data } = await axios.get<string>(url, {
       headers: {
@@ -20,7 +20,7 @@ async function fetchHTML(url: string): Promise<string> {
  * @param html - Nội dung HTML
  * @returns Văn bản trích xuất
  */
-function extractText(html: string): string {
+export function extractText(html: string): string {
   const $ = cheerio.load(html);
 
   // Loại bỏ các thẻ không cần thiết

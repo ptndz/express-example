@@ -59,6 +59,12 @@
 					"status": {
 						"$ref": "#/components/schemas/UserStatus"
 					},
+					"bots": {
+						"items": {
+							"$ref": "#/components/schemas/Bot"
+						},
+						"type": "array"
+					},
 					"createAt": {
 						"type": "string",
 						"format": "date-time"
@@ -81,6 +87,7 @@
 					"files",
 					"verified",
 					"status",
+					"bots",
 					"createAt",
 					"updateAt"
 				],
@@ -379,6 +386,94 @@
 					"Suspended"
 				]
 			},
+			"Bot": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"username": {
+						"type": "string"
+					},
+					"token": {
+						"type": "string"
+					},
+					"owner": {
+						"$ref": "#/components/schemas/User"
+					},
+					"webhook_url": {
+						"type": "string"
+					},
+					"messages": {
+						"items": {
+							"$ref": "#/components/schemas/Message"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"description",
+					"username",
+					"token",
+					"owner",
+					"webhook_url",
+					"messages"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Message": {
+				"properties": {
+					"update_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"fromUserId": {
+						"type": "number",
+						"format": "double"
+					},
+					"toUserId": {
+						"type": "number",
+						"format": "double"
+					},
+					"text": {
+						"type": "string"
+					},
+					"direction": {
+						"type": "string",
+						"enum": [
+							"user->bot",
+							"bot->user"
+						]
+					},
+					"bot": {
+						"$ref": "#/components/schemas/Bot"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"update_id",
+					"fromUserId",
+					"toUserId",
+					"text",
+					"direction",
+					"bot",
+					"createdAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"IResponse_User_": {
 				"properties": {
 					"code": {
@@ -446,6 +541,12 @@
 					},
 					"status": {
 						"$ref": "#/components/schemas/UserStatus"
+					},
+					"bots": {
+						"items": {
+							"$ref": "#/components/schemas/Bot"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -459,7 +560,8 @@
 					"role",
 					"files",
 					"verified",
-					"status"
+					"status",
+					"bots"
 				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
@@ -630,6 +732,12 @@
 					},
 					"status": {
 						"$ref": "#/components/schemas/UserStatus"
+					},
+					"bots": {
+						"items": {
+							"$ref": "#/components/schemas/Bot"
+						},
+						"type": "array"
 					},
 					"createAt": {
 						"type": "string",
@@ -1465,6 +1573,142 @@
 				"required": [
 					"code",
 					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_any_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ISendMessagePayload": {
+				"properties": {
+					"chat_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"text": {
+						"type": "string"
+					},
+					"reply_markup": {}
+				},
+				"required": [
+					"chat_id",
+					"text"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ICallbackQueryPayload": {
+				"properties": {
+					"callback_query": {
+						"properties": {
+							"message": {
+								"properties": {
+									"chat": {
+										"properties": {
+											"id": {
+												"type": "number",
+												"format": "double"
+											}
+										},
+										"required": [
+											"id"
+										],
+										"type": "object"
+									},
+									"message_id": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"chat",
+									"message_id"
+								],
+								"type": "object"
+							},
+							"data": {
+								"type": "string"
+							},
+							"from": {
+								"properties": {
+									"id": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"id"
+								],
+								"type": "object"
+							}
+						},
+						"required": [
+							"message",
+							"data",
+							"from"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"callback_query"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IResponse_any-Array_": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"error": {},
+					"data": {
+						"items": {},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ISetWebhookPayload": {
+				"properties": {
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"url"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2866,6 +3110,180 @@
 					}
 				],
 				"parameters": []
+			}
+		},
+		"/api/{token}/sendMessage": {
+			"post": {
+				"operationId": "SendMessage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_any_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ISendMessagePayload"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/{token}/callbackQuery": {
+			"post": {
+				"operationId": "CallbackQuery",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_any_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ICallbackQueryPayload"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/{token}/getUpdates": {
+			"get": {
+				"operationId": "GetUpdates",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_any-Array_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"default": 0,
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"default": 100,
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/api/{token}/setWebhook": {
+			"post": {
+				"operationId": "SetWebhook",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IResponse_boolean_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"API"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ISetWebhookPayload"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

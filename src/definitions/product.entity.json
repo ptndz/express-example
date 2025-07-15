@@ -1,0 +1,27 @@
+{
+  "name": "Product",
+  "tableName": "products",
+  "columns": {
+    "id": { "type": "int", "primary": true, "generated": true },
+    "name": { "type": "varchar", "length": 255, "nullable": false },
+    "description": { "type": "text", "nullable": true },
+    "price": {
+      "type": "decimal",
+      "precision": 10,
+      "scale": 2,
+      "nullable": false
+    },
+    "stock": { "type": "int", "default": 0 },
+    "categoryId": { "type": "int" },
+    "createdAt": { "type": "timestamp", "createDate": true },
+    "updatedAt": { "type": "timestamp", "updateDate": true }
+  },
+  "relations": {
+    "category": {
+      "target": "Category",
+      "type": "many-to-one",
+      "joinColumn": true,
+      "inverseSide": "products"
+    }
+  }
+}

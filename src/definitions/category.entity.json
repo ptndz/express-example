@@ -1,0 +1,15 @@
+{
+  "name": "Category",
+  "tableName": "categories",
+  "columns": {
+    "id": { "type": "int", "primary": true, "generated": true },
+    "name": { "type": "varchar", "nullable": false }
+  },
+  "relations": {
+    "products": {
+      "target": "Product",
+      "type": "one-to-many",
+      "inverseSide": "category"
+    }
+  }
+}

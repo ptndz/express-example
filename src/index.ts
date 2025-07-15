@@ -16,12 +16,12 @@ import addLog from "./config/addLog";
 import configureMorgan from "./config/log";
 import { ORIGIN, __prod__ } from "./constants";
 import { AppDataSource } from "./data-source";
-import { socketMiddleware } from "./middlewares";
-import router from "./routers";
-import socket from "./routers/socket";
-import { startSync } from "./services/meilisearch/sync";
-import { i18n, setLocale } from "./translation";
 
+import { socketMiddleware } from "./middlewares";
+import { setupRouters } from "./routers";
+import socket from "./routers/socket";
+import { generateMergedSwaggerSpec } from "./swagger";
+import { i18n, setLocale } from "./translation";
 dotenv.config();
 
 const logDirectory = path.join(__dirname, "logs");
@@ -81,17 +81,11 @@ AppDataSource.initialize()
     }
 
     app.use(express.static("public"));
-    app.use(
-      "/docs",
-      swaggerUi.serve,
-      swaggerUi.setup(undefined, {
-        swaggerOptions: {
-          url: "/swagger.json",
-        },
-      })
-    );
+    const mergedSwaggerSpec = generateMergedSwaggerSpec();
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSwaggerSpec));
     app.use(setLocale);
-    app.use("/", router);
+    const apiRouter = await setupRouters();
+    app.use("/", apiRouter);
     app.use((_req, res) => {
       res.status(404).json({
         code: 404,
@@ -116,7 +110,7 @@ AppDataSource.initialize()
       socketMiddleware(socket, next);
     });
     socket(io);
-    startSync();
+    // startSync();
     server.listen(port, () => {
       process.on("exit", function () {
         server.close();

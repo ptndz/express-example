@@ -4,6 +4,7 @@ export * from "./strFirstLetter";
 export * from "./removeVietnameseTones";
 export * from "./strToCapitalize";
 export * from "./changeMimeType";
+import { v4 as uuidv4 } from 'uuid';
 
 function typeoOf(value: any) {
     return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
@@ -105,8 +106,20 @@ function dateNow() {
     const yearNoTiles = `${yyyy}${mm}${dd}`;
     return {date, dateNoTiles, yearNoTiles, dd, mm, yyyy};
 }
+function generateBotToken(botId: number): string {
+    const uuid = uuidv4().replace(/-/g, ''); // UUID v4 có 36 ký tự bao gồm dấu gạch ngang, bỏ dấu gạch ngang còn 32 ký tự
+    let secretPart = '';
 
+    // Thêm các chuỗi ngẫu nhiên khác để đạt độ dài mong muốn
+    while (secretPart.length < 60) { // Thêm khoảng 60 ký tự ngẫu nhiên nữa
+        secretPart += Math.random().toString(36).substring(2, 10);
+    }
+    secretPart = secretPart.substring(0, 60); // Cắt bớt nếu dài quá
+
+    return `${botId}:${uuid}:${secretPart}`;
+}
 export {
+    generateBotToken,
     removeKeyObject,
     isNullOrUndefined,
     isAnyNullOrUndefined,

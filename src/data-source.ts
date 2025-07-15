@@ -4,12 +4,19 @@ import { DataSource } from "typeorm";
 import { __prod__ } from "./constants";
 import { Bookmark } from "./entity/Bookmark";
 import { BookmarkTag } from "./entity/BookmarkTag";
+import { Bot } from "./entity/Bot";
+import { CallbackQuery } from "./entity/CallbackQuery";
 import { Device } from "./entity/Device";
 import { File } from "./entity/File";
+import { Message } from "./entity/Message";
 import { Permissions } from "./entity/Permissions";
 import { Role } from "./entity/Role";
 import { Tag } from "./entity/Tag";
 import { User } from "./entity/User";
+import { loadEntitySchemas } from "./loaders/entity.loader";
+
+// Tải các entity động từ file JSON
+const dynamicEntities = loadEntitySchemas();
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -21,7 +28,20 @@ export const AppDataSource = new DataSource({
   synchronize: true,
   logging: false,
   ...(__prod__ ? {} : { synchronize: true }),
-  entities: [User, Role, Permissions, File, Device, Bookmark, BookmarkTag, Tag],
+  entities: [
+    User,
+    Role,
+    Permissions,
+    File,
+    Device,
+    Bookmark,
+    BookmarkTag,
+    Tag,
+    Bot,
+    CallbackQuery,
+    Message,
+    ...dynamicEntities,
+  ],
 
   migrations: [path.join(__dirname, "/migrations/*")],
 });

@@ -1,9 +1,14 @@
 export const RESOURCES = [
     "bookmark",
     "bookmark_tag",
+    "bot",
+    "callback_query",
+    "categories",
     "device",
     "file",
+    "message",
     "permissions",
+    "products",
     "role",
     "tag",
     "user"
@@ -50,6 +55,16 @@ export type Permission =
     | "role.detail"
     | "role.update"
     | "role.delete"
+    | "message.list"
+    | "message.create"
+    | "message.detail"
+    | "message.update"
+    | "message.delete"
+    | "bot.list"
+    | "bot.create"
+    | "bot.detail"
+    | "bot.update"
+    | "bot.delete"
     | "user.list"
     | "user.create"
     | "user.detail"
@@ -59,5 +74,20 @@ export type Permission =
     | "bookmark.create"
     | "bookmark.detail"
     | "bookmark.update"
-    | "bookmark.delete";
+    | "bookmark.delete"
+    | "callback_query.list"
+    | "callback_query.create"
+    | "callback_query.detail"
+    | "callback_query.update"
+    | "callback_query.delete"
+    | "categories.list"
+    | "categories.create"
+    | "categories.detail"
+    | "categories.update"
+    | "categories.delete"
+    | "products.list"
+    | "products.create"
+    | "products.detail"
+    | "products.update"
+    | "products.delete";
 

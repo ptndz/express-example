@@ -13,6 +13,7 @@ import { Bookmark } from "./Bookmark";
 import { Device } from "./Device";
 import { File } from "./File";
 import { Role } from "./Role";
+import { Bot } from "./Bot";
 export type UserStatus =
   | "Active"
   | "Inactive"
@@ -67,6 +68,9 @@ export class User extends BaseEntity {
     default: "Pending",
   })
   status!: UserStatus;
+
+  @OneToMany(() => Bot, bot => bot.owner)
+  bots!: Bot[];
 
   @CreateDateColumn({
     type: "timestamp",
