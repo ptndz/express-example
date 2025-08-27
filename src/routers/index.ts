@@ -41,7 +41,7 @@ export const setupRouters = async (): Promise<Router> => {
   router.use("/summarize", useSummarize);
   router.use("/api", useApiBot);
   router.use("/api/v1/entity-definitions", definitionRouter);
-  const dynamicRouter = await loadDynamicRouters();
+  const dynamicRouter = loadDynamicRouters();
   router.use("/api/v1", dynamicRouter);
   return router;
 };

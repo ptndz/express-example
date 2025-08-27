@@ -2,13 +2,11 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Express } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
+import express, { Express, Request, Response } from "express";
 import helmet from "helmet";
 import http from "http";
 import morgan from "morgan";
 import path from "path";
-import { ParsedQs } from "qs";
 import "reflect-metadata";
 import { Server as SocketIO } from "socket.io";
 import swaggerUi from "swagger-ui-express";
@@ -63,16 +61,7 @@ AppDataSource.initialize()
       })
     );
 
-    function shouldCompress(
-      req: express.Request<
-        ParamsDictionary,
-        any,
-        any,
-        ParsedQs,
-        Record<string, any>
-      >,
-      res: express.Response
-    ) {
+    function shouldCompress(req: Request, res: Response) {
       if (req.headers["x-no-compression"]) {
         // don't compress responses with this request header
         return false;

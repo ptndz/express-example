@@ -4,6 +4,7 @@ export * from "./strFirstLetter";
 export * from "./removeVietnameseTones";
 export * from "./strToCapitalize";
 export * from "./changeMimeType";
+export * from "./inflection";
 import { v4 as uuidv4 } from 'uuid';
 
 function typeoOf(value: any) {
