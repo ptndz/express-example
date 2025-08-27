@@ -17,7 +17,7 @@ import configureMorgan from "./config/log";
 import { ORIGIN, __prod__ } from "./constants";
 import { AppDataSource } from "./data-source";
 
-import { socketMiddleware } from "./middlewares";
+import { socketMiddleware, csrfProtection } from "./middlewares";
 import { setupRouters } from "./routers";
 import socket from "./routers/socket";
 import { generateMergedSwaggerSpec } from "./swagger";
@@ -35,6 +35,7 @@ AppDataSource.initialize()
     app.use(express.json({ limit: "64mb" }));
     app.use(express.urlencoded({ limit: "64mb", extended: true }));
     app.use(cookieParser());
+    app.use(csrfProtection);
     app.use(
       cors({
         origin: "*",
@@ -84,6 +85,9 @@ AppDataSource.initialize()
     const mergedSwaggerSpec = generateMergedSwaggerSpec();
     app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSwaggerSpec));
     app.use(setLocale);
+    app.get("/csrf-token", (req, res) => {
+      res.json({ csrfToken: req.cookies["csrf-token"] });
+    });
     const apiRouter = await setupRouters();
     app.use("/", apiRouter);
     app.use((_req, res) => {

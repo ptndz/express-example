@@ -17,7 +17,8 @@
     "server:dev": "concurrently \"npx tsc --watch\" \"env-cmd -f .env.production npm run nodemon\" \"nodemon -x tsoa spec\"",
     "entity": "typeorm entity:create src/entity/ex",
     "start:debug": "concurrently \"npx tsc --watch\" \"env-cmd -f .env.local nodemon --inspect build/index.js\"",
-    "generate-types": "env-cmd -f .env.local ts-node actions/generateTypes.ts"
+    "generate-types": "env-cmd -f .env.local ts-node actions/generateTypes.ts",
+    "check:permissions": "ts-node actions/checkPermissions.ts"
   },
   "devDependencies": {
     "@types/compression": "^1.7.5",
