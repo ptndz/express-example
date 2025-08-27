@@ -2,6 +2,7 @@ import { EntityManager } from "typeorm";
 import { PERMISSIONS_ACTIONS } from "../constants";
 import { AppDataSource } from "../data-source";
 import { Permissions } from "../entity/Permissions";
+import redisClient from "../redis";
 
 export type IPermissionPayload = Omit<
   Permissions,
@@ -138,10 +139,21 @@ export const getPermissionByRoleIdByResource = async (
   if (roleId === undefined) {
     return null;
   }
+  const cacheKey = `perm:${roleId}:${resource}`;
+  try {
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as Permissions;
+    }
+  } catch (_e) {}
+
   const permission = await Permissions.findOne({
     where: { role_id: roleId, resource: resource },
   });
   if (!permission) return null;
+  try {
+    await redisClient.set(cacheKey, JSON.stringify(permission), "EX", 300);
+  } catch (_e) {}
   return permission;
 };
 export const getEntityTableNames = async () => {
