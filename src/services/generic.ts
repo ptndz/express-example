@@ -1,5 +1,5 @@
 import { FindManyOptions, ObjectLiteral, Repository } from "typeorm";
-import { AppDataSource } from "../data-source";
+import { AppDataSource, dynamicRegistry } from "../data-source";
 
 interface FindOptions<T> {
   relations?: string[];
@@ -65,6 +65,12 @@ export const createGenericService = <T extends ObjectLiteral>(
 
     update: (id: string | number, data: any) => repository.update(id, data),
 
-    delete: (id: string | number) => repository.delete(id),
+    delete: (id: string | number) => {
+      const def = dynamicRegistry.defs.get(entityName);
+      if (def?.softDelete) {
+        return repository.softDelete(id);
+      }
+      return repository.delete(id);
+    },
   };
 };

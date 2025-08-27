@@ -1,32 +1,26 @@
-import * as fs from "fs";
-import * as path from "path";
+import fs from "fs";
+import path from "path";
 import { EntitySchema } from "typeorm";
+import { schemaFromJson, EntityJson } from "./entity-schema-factory";
 
-const definitionsPath = path.join(__dirname, "..", "definitions");
+export type DynamicRegistry = {
+  defs: Map<string, EntityJson>;
+  schemas: Map<string, EntitySchema>;
+};
 
-export const loadEntitySchemas = (): EntitySchema[] => {
-  const schemas: EntitySchema[] = [];
+export const loadDynamicEntities = (dir: string): DynamicRegistry => {
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json"));
+  const defs = new Map<string, EntityJson>();
+  const schemas = new Map<string, EntitySchema>();
 
-  const files = fs.readdirSync(definitionsPath);
-
-  for (const file of files) {
-    if (path.extname(file) === ".json") {
-      const schemaDefinition = JSON.parse(
-        fs.readFileSync(path.join(definitionsPath, file), "utf-8")
-      );
-
-      schemas.push(
-        new EntitySchema({
-          name: schemaDefinition.name,
-          tableName: schemaDefinition.tableName,
-          columns: schemaDefinition.columns,
-          relations: schemaDefinition.relations || {},
-        })
-      );
-
-      console.log(`[EntityLoader] Loaded entity: ${schemaDefinition.name}`);
-    }
+  for (const f of files) {
+    const raw = fs.readFileSync(path.join(dir, f), "utf8");
+    const def = JSON.parse(raw) as EntityJson;
+    defs.set(def.name, def);
+    schemas.set(def.name, schemaFromJson(def));
+    console.log(`[EntityLoader] Loaded entity: ${def.name}`);
   }
 
-  return schemas;
+  return { defs, schemas };
 };
+

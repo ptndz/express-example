@@ -13,10 +13,13 @@ import { Permissions } from "./entity/Permissions";
 import { Role } from "./entity/Role";
 import { Tag } from "./entity/Tag";
 import { User } from "./entity/User";
-import { loadEntitySchemas } from "./loaders/entity.loader";
+import { loadDynamicEntities } from "./loaders/entity.loader";
+import type { DynamicRegistry } from "./loaders/entity.loader";
 
 // Tải các entity động từ file JSON
-const dynamicEntities = loadEntitySchemas();
+const definitionsDir = path.join(__dirname, "definitions");
+export const dynamicRegistry: DynamicRegistry = loadDynamicEntities(definitionsDir);
+const dynamicEntities = Array.from(dynamicRegistry.schemas.values());
 
 export const AppDataSource = new DataSource({
   type: "mysql",

@@ -2,14 +2,23 @@
   "name": "Category",
   "tableName": "categories",
   "columns": {
-    "id": { "type": "int", "primary": true, "generated": true },
-    "name": { "type": "varchar", "nullable": false }
+    "id": { "type": "int", "primary": true, "generated": "increment" },
+    "name": { "type": "varchar", "length": 191, "unique": true, "nullable": false },
+    "slug": { "type": "varchar", "length": 191, "unique": true },
+    "created_at": { "type": "timestamp", "createDate": true },
+    "updated_at": { "type": "timestamp", "updateDate": true }
   },
   "relations": {
-    "products": {
-      "target": "Product",
-      "type": "one-to-many",
-      "inverseSide": "category"
-    }
+    "products": { "type": "one-to-many", "target": "Product", "inverseSide": "category" }
+  },
+  "indices": [
+    { "columns": ["slug"], "unique": true }
+  ],
+  "softDelete": false,
+  "permissions": {
+    "read": ["admin", "editor", "viewer"],
+    "create": ["admin", "editor"],
+    "update": ["admin", "editor"],
+    "delete": ["admin"]
   }
 }

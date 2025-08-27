@@ -2,26 +2,24 @@
   "name": "Product",
   "tableName": "products",
   "columns": {
-    "id": { "type": "int", "primary": true, "generated": true },
-    "name": { "type": "varchar", "length": 255, "nullable": false },
-    "description": { "type": "text", "nullable": true },
-    "price": {
-      "type": "decimal",
-      "precision": 10,
-      "scale": 2,
-      "nullable": false
-    },
-    "stock": { "type": "int", "default": 0 },
-    "categoryId": { "type": "int" },
-    "createdAt": { "type": "timestamp", "createDate": true },
-    "updatedAt": { "type": "timestamp", "updateDate": true }
+    "id": { "type": "int", "primary": true, "generated": "increment" },
+    "title": { "type": "varchar", "length": 255, "nullable": false },
+    "price": { "type": "decimal", "precision": 12, "scale": 2, "default": 0 },
+    "attrs": { "type": "json", "nullable": true },
+    "created_at": { "type": "timestamp", "createDate": true },
+    "updated_at": { "type": "timestamp", "updateDate": true }
   },
   "relations": {
-    "category": {
-      "target": "Category",
-      "type": "many-to-one",
-      "joinColumn": true,
-      "inverseSide": "products"
-    }
+    "category": { "type": "many-to-one", "target": "Category", "joinColumn": true, "onDelete": "SET NULL" }
+  },
+  "indices": [
+    { "columns": ["title"] }
+  ],
+  "softDelete": true,
+  "permissions": {
+    "read":   ["admin", "editor", "viewer"],
+    "create": ["admin", "editor"],
+    "update": ["admin", "editor"],
+    "delete": ["admin"]
   }
 }
