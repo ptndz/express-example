@@ -11,6 +11,10 @@ import "reflect-metadata";
 import { Server as SocketIO } from "socket.io";
 import swaggerUi from "swagger-ui-express";
 import chokidar from "chokidar";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+import { execute, subscribe } from "graphql";
+import type { ServerCleanup } from "graphql-ws";
 import addLog from "./config/addLog";
 import configureMorgan from "./config/log";
 import { ORIGIN, __prod__ } from "./constants";
@@ -94,9 +98,19 @@ initDataSource()
     const mergedSwaggerSpec = generateMergedSwaggerSpec();
     app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSwaggerSpec));
     app.use(setLocale);
-    let graphqlMiddleware = await makeExecutableDocuments();
+    let { schema, middleware: graphqlMiddleware } = await makeExecutableDocuments();
     app.use("/graphql", authAccessToken, (req, res, next) =>
       graphqlMiddleware(req, res, next)
+    );
+    const wsServer = new WebSocketServer({ server, path: "/graphql" });
+    let serverCleanup: ServerCleanup = useServer(
+      {
+        schema,
+        execute,
+        subscribe,
+        context: (ctx) => ({ req: ctx.extra.request as any }),
+      },
+      wsServer
     );
     app.get("/csrf-token", (req, res) => {
       res.json({ csrfToken: req.cookies["csrf-token"] });
@@ -137,7 +151,19 @@ initDataSource()
       try {
         await AppDataSource.destroy();
         await initDataSource();
-        graphqlMiddleware = await makeExecutableDocuments();
+        const result = await makeExecutableDocuments();
+        schema = result.schema;
+        graphqlMiddleware = result.middleware;
+        await serverCleanup.dispose();
+        serverCleanup = useServer(
+          {
+            schema,
+            execute,
+            subscribe,
+            context: (ctx) => ({ req: ctx.extra.request as any }),
+          },
+          wsServer
+        );
       } catch (err) {
         console.error(err);
       } finally {
