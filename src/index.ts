@@ -10,26 +10,45 @@ import path from "path";
 import "reflect-metadata";
 import { Server as SocketIO } from "socket.io";
 import swaggerUi from "swagger-ui-express";
+import chokidar from "chokidar";
 import addLog from "./config/addLog";
 import configureMorgan from "./config/log";
 import { ORIGIN, __prod__ } from "./constants";
-import { AppDataSource } from "./data-source";
+import { AppDataSource, initDataSource } from "./data-source";
 
 import { socketMiddleware, csrfProtection, authAccessToken } from "./middlewares";
 import { setupRouters } from "./routers";
 import socket from "./routers/socket";
 import { generateMergedSwaggerSpec } from "./swagger";
 import { i18n, setLocale } from "./translation";
-import { createGraphQLMiddleware } from "./graphql";
+import { makeExecutableDocuments } from "./graphql";
 dotenv.config();
 
 const logDirectory = path.join(__dirname, "logs");
-AppDataSource.initialize()
+let isReloading = false;
+const waitForUnlock = () =>
+  new Promise<void>((resolve) => {
+    if (!isReloading) return resolve();
+    const timer = setInterval(() => {
+      if (!isReloading) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 10);
+  });
+
+initDataSource()
   .then(async () => {
     const app: Express = express();
     const server = new http.Server(app);
 
     const port = process.env.PORT;
+
+    // Middleware để chờ mutex khi reload
+    app.use(async (_req, _res, next) => {
+      await waitForUnlock();
+      next();
+    });
 
     app.use(express.json({ limit: "64mb" }));
     app.use(express.urlencoded({ limit: "64mb", extended: true }));
@@ -75,8 +94,10 @@ AppDataSource.initialize()
     const mergedSwaggerSpec = generateMergedSwaggerSpec();
     app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSwaggerSpec));
     app.use(setLocale);
-    const graphqlMiddleware = await createGraphQLMiddleware();
-    app.use("/graphql", authAccessToken, graphqlMiddleware);
+    let graphqlMiddleware = await makeExecutableDocuments();
+    app.use("/graphql", authAccessToken, (req, res, next) =>
+      graphqlMiddleware(req, res, next)
+    );
     app.get("/csrf-token", (req, res) => {
       res.json({ csrfToken: req.cookies["csrf-token"] });
     });
@@ -106,6 +127,26 @@ AppDataSource.initialize()
       socketMiddleware(socket, next);
     });
     socket(io);
+
+    const watcher = chokidar.watch(
+      path.join(__dirname, "definitions", "*.json"),
+      { ignoreInitial: true }
+    );
+    watcher.on("all", async () => {
+      isReloading = true;
+      try {
+        await AppDataSource.destroy();
+        await initDataSource();
+        graphqlMiddleware = await makeExecutableDocuments();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setTimeout(() => {
+          isReloading = false;
+        }, 300);
+      }
+    });
+
     // startSync();
     server.listen(port, () => {
       process.on("exit", function () {

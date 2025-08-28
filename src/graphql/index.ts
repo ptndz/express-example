@@ -7,7 +7,7 @@ export interface GraphQLContext {
   req: Request;
 }
 
-export const createGraphQLMiddleware = async () => {
+export const makeExecutableDocuments = async () => {
   const schema = buildSchema();
   const server = new ApolloServer<GraphQLContext>({ schema });
   await server.start();
@@ -15,3 +15,5 @@ export const createGraphQLMiddleware = async () => {
     context: async ({ req }: { req: Request }) => ({ req }),
   });
 };
+
+export const createGraphQLMiddleware = makeExecutableDocuments;
