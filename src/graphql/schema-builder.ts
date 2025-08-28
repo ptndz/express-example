@@ -12,6 +12,7 @@ import {
 import { AppDataSource, dynamicRegistry } from '../data-source';
 import { ensureAllowed } from './authz';
 import { buildFilter } from './filter-builder';
+import { ListFilter } from '../types';
 import { pubsub } from '../pubsub';
 
 const scalarType = (t: string) => {
@@ -71,7 +72,7 @@ export const buildSchema = () => {
         where: { type: GraphQLString },
         include: { type: new GraphQLList(GraphQLString) },
       },
-      resolve: async (_src: any, args: any, ctx: any) => {
+      resolve: async (_src: any, args: ListFilter & { q?: string }, ctx: any) => {
         ensureAllowed(ctx, entity, 'read');
         const opts = buildFilter(args);
         const [data, total] = await repo.findAndCount(opts as any);
@@ -97,7 +98,7 @@ export const buildSchema = () => {
         q: { type: GraphQLString },
         where: { type: GraphQLString },
       },
-      resolve: async (_src: any, args: any, ctx: any) => {
+      resolve: async (_src: any, args: ListFilter & { q?: string }, ctx: any) => {
         ensureAllowed(ctx, entity, 'read');
         const opts = buildFilter(args);
         return repo.count(opts as any);
