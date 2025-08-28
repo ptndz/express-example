@@ -15,11 +15,12 @@ import configureMorgan from "./config/log";
 import { ORIGIN, __prod__ } from "./constants";
 import { AppDataSource } from "./data-source";
 
-import { socketMiddleware, csrfProtection } from "./middlewares";
+import { socketMiddleware, csrfProtection, authAccessToken } from "./middlewares";
 import { setupRouters } from "./routers";
 import socket from "./routers/socket";
 import { generateMergedSwaggerSpec } from "./swagger";
 import { i18n, setLocale } from "./translation";
+import { createGraphQLMiddleware } from "./graphql";
 dotenv.config();
 
 const logDirectory = path.join(__dirname, "logs");
@@ -74,6 +75,8 @@ AppDataSource.initialize()
     const mergedSwaggerSpec = generateMergedSwaggerSpec();
     app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSwaggerSpec));
     app.use(setLocale);
+    const graphqlMiddleware = await createGraphQLMiddleware();
+    app.use("/graphql", authAccessToken, graphqlMiddleware);
     app.get("/csrf-token", (req, res) => {
       res.json({ csrfToken: req.cookies["csrf-token"] });
     });
