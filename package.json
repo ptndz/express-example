@@ -80,7 +80,10 @@
     "typeorm": "^0.3.20",
     "uuid": "^10.0.0",
     "web-push": "^3.6.7",
-    "chokidar": "^3.6.0"
+    "chokidar": "^3.6.0",
+    "graphql-ws": "^5.14.0",
+    "ws": "^8.17.0",
+    "graphql-subscriptions": "^2.0.0"
   },
   "resolutions": {
     "string-width": "^4.2.0",

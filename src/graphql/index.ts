@@ -11,9 +11,14 @@ export const makeExecutableDocuments = async () => {
   const schema = buildSchema();
   const server = new ApolloServer<GraphQLContext>({ schema });
   await server.start();
-  return expressMiddleware(server, {
-    context: async ({ req }: { req: Request }) => ({ req }),
-  });
+  return {
+    schema,
+    middleware: expressMiddleware(server, {
+      context: async ({ req }: { req: Request }) => ({ req }),
+    }),
+  };
 };
-
-export const createGraphQLMiddleware = makeExecutableDocuments;
+export const createGraphQLMiddleware = async () => {
+  const { middleware } = await makeExecutableDocuments();
+  return middleware;
+};

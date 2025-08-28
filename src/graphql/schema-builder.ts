@@ -12,6 +12,7 @@ import {
 import { AppDataSource, dynamicRegistry } from '../data-source';
 import { ensureAllowed } from './authz';
 import { buildFilter } from './filter-builder';
+import { pubsub } from '../pubsub';
 
 const scalarType = (t: string) => {
   switch (t) {
@@ -31,6 +32,7 @@ const scalarType = (t: string) => {
 export const buildSchema = () => {
   const queryFields: any = {};
   const mutationFields: any = {};
+  const subscriptionFields: any = {};
 
   for (const [entity, def] of dynamicRegistry.defs.entries()) {
     const fields: any = {};
@@ -108,7 +110,11 @@ export const buildSchema = () => {
       resolve: async (_src: any, { data }: any, ctx: any) => {
         ensureAllowed(ctx, entity, 'create');
         const obj = repo.create(data);
-        return repo.save(obj);
+        const saved = await repo.save(obj);
+        await pubsub.publish(`${entity.toUpperCase()}_CREATED`, {
+          [`${lc}Created`]: saved,
+        });
+        return saved;
       },
     };
 
@@ -134,9 +140,18 @@ export const buildSchema = () => {
         return true;
       },
     };
+
+    subscriptionFields[`${lc}Created`] = {
+      type,
+      subscribe: () => pubsub.asyncIterator(`${entity.toUpperCase()}_CREATED`),
+    };
   }
 
   const query = new GraphQLObjectType({ name: 'Query', fields: queryFields });
   const mutation = new GraphQLObjectType({ name: 'Mutation', fields: mutationFields });
-  return new GraphQLSchema({ query, mutation });
+  const subscription = new GraphQLObjectType({
+    name: 'Subscription',
+    fields: subscriptionFields,
+  });
+  return new GraphQLSchema({ query, mutation, subscription });
 };
