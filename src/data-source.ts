@@ -16,35 +16,43 @@ import { User } from "./entity/User";
 import { loadDynamicEntities } from "./loaders/entity.loader";
 import type { DynamicRegistry } from "./loaders/entity.loader";
 
-// Tải các entity động từ file JSON
-const definitionsDir = path.join(__dirname, "definitions");
-export const dynamicRegistry: DynamicRegistry = loadDynamicEntities(definitionsDir);
-const dynamicEntities = Array.from(dynamicRegistry.schemas.values());
+export let dynamicRegistry: DynamicRegistry;
+export let AppDataSource: DataSource;
 
-export const AppDataSource = new DataSource({
-  type: "mysql",
-  host: process.env.DB_HOST,
-  port: 3306,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  synchronize: true,
-  logging: false,
-  ...(__prod__ ? {} : { synchronize: true }),
-  entities: [
-    User,
-    Role,
-    Permissions,
-    File,
-    Device,
-    Bookmark,
-    BookmarkTag,
-    Tag,
-    Bot,
-    CallbackQuery,
-    Message,
-    ...dynamicEntities,
-  ],
+export const initDataSource = async (): Promise<void> => {
+  // Tải các entity động từ file JSON
+  const definitionsDir = path.join(__dirname, "definitions");
+  dynamicRegistry = loadDynamicEntities(definitionsDir);
+  const dynamicEntities = Array.from(dynamicRegistry.schemas.values());
 
-  migrations: [path.join(__dirname, "/migrations/*")],
-});
+  AppDataSource = new DataSource({
+    type: "mysql",
+    host: process.env.DB_HOST,
+    port: 3306,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    synchronize: true,
+    logging: false,
+    ...(__prod__ ? {} : { synchronize: true }),
+    entities: [
+      User,
+      Role,
+      Permissions,
+      File,
+      Device,
+      Bookmark,
+      BookmarkTag,
+      Tag,
+      Bot,
+      CallbackQuery,
+      Message,
+      ...dynamicEntities,
+    ],
+
+    migrations: [path.join(__dirname, "/migrations/*")],
+  });
+
+  await AppDataSource.initialize();
+};
+
